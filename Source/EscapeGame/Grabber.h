@@ -24,10 +24,11 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 
+	// How far ahead of the player can we reach in cm
+	UPROPERTY(EditDefaultsOnly, Category = "Raycast")
+	float Reach = 300.f;
 
 private:
-	// How far ahead of the player can we reach in cm
-	float Reach = 300.f;
 
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
 

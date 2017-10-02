@@ -69,14 +69,14 @@ void UGrabber::Grab() {
 	/// If we hit something then attach a physics handle
 	if (ActorHit)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("An actor was hit by the Grabber::GetFirstPhysicsBodyInReach()"))
+		//UE_LOG(LogTemp, Warning, TEXT("An actor was hit by the Grabber::GetFirstPhysicsBodyInReach()"))
 
 		if (!PhysicsHandle) { 
-			UE_LOG(LogTemp, Warning, TEXT("But there was no Physics Handle"))
+			//UE_LOG(LogTemp, Warning, TEXT("But there was no Physics Handle"))
 				return;
 		}
 
-		UE_LOG(LogTemp, Warning, TEXT("And the component has been grabbed"))
+		//UE_LOG(LogTemp, Warning, TEXT("And the component has been grabbed"))
 
 		PhysicsHandle->GrabComponent(
 			ComponentToGrab,
@@ -89,14 +89,14 @@ void UGrabber::Grab() {
 
 void UGrabber::Release()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Release has been called"))
+	//UE_LOG(LogTemp, Warning, TEXT("Release has been called"))
 
 	if (!PhysicsHandle) { 
-		UE_LOG(LogTemp, Warning, TEXT("but there was no Physics Handle"))
+		//UE_LOG(LogTemp, Warning, TEXT("but there was no Physics Handle"))
 			return;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("and the component has been released"))
+	//UE_LOG(LogTemp, Warning, TEXT("and the component has been released"))
 
 	PhysicsHandle->ReleaseComponent();
 }
