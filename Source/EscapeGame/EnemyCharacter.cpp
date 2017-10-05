@@ -55,6 +55,8 @@ void AEnemyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//UE_LOG(LogTemp, Warning, TEXT("Time since seen: %f   Time since heard: %f"), GetWorld()->TimeSeconds - LastSeenTime, GetWorld()->TimeSeconds - LastHeardTime);
+
 	/* Check if the last time we sensed a player is beyond the time out value to prevent bot from endlessly following a player. */
 	if (bSensedTarget && (GetWorld()->TimeSeconds - LastSeenTime) > SenseTimeOut
 		&& (GetWorld()->TimeSeconds - LastHeardTime) > SenseTimeOut)
@@ -65,6 +67,8 @@ void AEnemyCharacter::Tick(float DeltaTime)
 			bSensedTarget = false;
 			/* Reset */
 			AIController->SetTargetEnemy(nullptr);
+
+			UE_LOG(LogTemp, Warning, TEXT("RESET TARGET TO NULL"));
 		}
 	}
 }
@@ -81,6 +85,8 @@ void AEnemyCharacter::OnSeePlayer(APawn * Pawn)
 	//	//BroadcastUpdateAudioLoop(true);
 	//}
 
+	UE_LOG(LogTemp, Error, TEXT("Player SEEN"));
+
 	/* Keep track of the time the player was last sensed in order to clear the target */
 	LastSeenTime = GetWorld()->GetTimeSeconds();
 	bSensedTarget = true;
@@ -90,6 +96,7 @@ void AEnemyCharacter::OnSeePlayer(APawn * Pawn)
 	if (AIController)// && SensedPawn->IsAlive())
 	{
 		AIController->SetTargetEnemy(SensedPawn);
+		AIController->SetTargetLocation(SensedPawn->GetActorLocation());
 	}
 }
 
@@ -105,6 +112,8 @@ void AEnemyCharacter::OnHearNoise(APawn * PawnInstigator, const FVector & Locati
 	//	BroadcastUpdateAudioLoop(true);
 	//}
 
+	UE_LOG(LogTemp, Error, TEXT("HEARD Noise"));
+
 	bSensedTarget = true;
 	LastHeardTime = GetWorld()->GetTimeSeconds();
 
@@ -112,6 +121,7 @@ void AEnemyCharacter::OnHearNoise(APawn * PawnInstigator, const FVector & Locati
 	if (AIController)
 	{
 		AIController->SetTargetEnemy(PawnInstigator);
+		AIController->SetTargetLocation(PawnInstigator->GetActorLocation()); //  change to some kind of delay??? Watch vids etc
 	}
 }
 

@@ -13,6 +13,7 @@ AEnemyAIController::AEnemyAIController(const class FObjectInitializer& ObjectIni
 	BlackboardComp = ObjectInitializer.CreateDefaultSubobject<UBlackboardComponent>(this, TEXT("BlackboardComp"));
 
 	/* Match with the AI/ZombieBlackboard */
+	TargetLocationKeyName = "TargetLocation";
 	PatrolLocationKeyName = "PatrolLocation";
 	CurrentWaypointKeyName = "CurrentWaypoint";
 	EnemyTypeKeyName = "EnemyType";
@@ -74,6 +75,14 @@ void AEnemyAIController::SetWaypoint(AEnemyWaypoint * NewWaypoint)
 	if (BlackboardComp)
 	{
 		BlackboardComp->SetValueAsObject(CurrentWaypointKeyName, NewWaypoint);
+	}
+}
+
+void AEnemyAIController::SetTargetLocation(FVector TargetLocation)
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsVector(TargetLocationKeyName, TargetLocation);
 	}
 }
 

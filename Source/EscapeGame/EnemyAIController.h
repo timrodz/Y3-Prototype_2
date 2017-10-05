@@ -36,6 +36,9 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 		FName PatrolLocationKeyName;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
+		FName TargetLocationKeyName;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		FName CurrentWaypointKeyName;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
@@ -48,6 +51,8 @@ public:
 	AFirstPersonCharacterController* GetTargetEnemy();
 
 	void SetWaypoint(AEnemyWaypoint* NewWaypoint);
+
+	void SetTargetLocation(FVector TargetLocation);
 
 	void SetTargetEnemy(APawn* NewTarget);
 
