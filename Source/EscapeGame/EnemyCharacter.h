@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "EnemyCharacter.generated.h"
 
-UENUM()
+UENUM(BlueprintType)
 enum class EEnemyType : uint8
 {
 	/* Does not move, remains in place until a player is spotted */
@@ -60,7 +60,7 @@ protected:
 
 public:
 
-	AEnemyCharacter();
+	AEnemyCharacter(const class FObjectInitializer& ObjectInitializer);
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 		EEnemyType EnemyType;

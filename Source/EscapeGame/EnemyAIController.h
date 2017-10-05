@@ -18,7 +18,7 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 {
 	GENERATED_BODY()
 
-	AEnemyAIController();
+	AEnemyAIController(const class FObjectInitializer& ObjectInitializer);
 
 	/* Called whenever the controller possesses a character bot */
 	virtual void Possess(class APawn* InPawn) override;
@@ -39,7 +39,7 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 		FName CurrentWaypointKeyName;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
-		FName BotTypeKeyName;
+		FName EnemyTypeKeyName;
 	
 public:
 
@@ -51,7 +51,7 @@ public:
 
 	void SetTargetEnemy(APawn* NewTarget);
 
-	void SetBlackboardBotType(EEnemyType NewType);
+	void SetBlackboardEnemyType(EEnemyType NewType);
 
 	/** Returns BehaviorComp subobject **/
 	FORCEINLINE UBehaviorTreeComponent* GetBehaviorComp() const { return BehaviorComp; }

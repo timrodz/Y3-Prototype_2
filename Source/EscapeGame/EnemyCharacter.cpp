@@ -8,7 +8,7 @@
 
 
 // Sets default values
-AEnemyCharacter::AEnemyCharacter()
+AEnemyCharacter::AEnemyCharacter(const class FObjectInitializer& ObjectInitializer)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -122,7 +122,7 @@ void AEnemyCharacter::SetEnemyType(EEnemyType NewType)
 	AEnemyAIController* AIController = Cast<AEnemyAIController>(GetController());
 	if (AIController)
 	{
-		AIController->SetBlackboardBotType(NewType);
+		AIController->SetBlackboardEnemyType(NewType);
 	}
 }
 
