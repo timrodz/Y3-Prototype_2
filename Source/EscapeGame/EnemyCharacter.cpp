@@ -83,6 +83,8 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	if (bPatrolPointsSet && !bSensedTarget)
 	{
 		DebugTextRender->SetText("Patrolling");
+		AIController = Cast<AEnemyAIController>(GetController());
+		AIController->DrawDebugLineToTarget();
 	}
 	else if(!bPatrolPointsSet && !bSensedTarget)
 	{

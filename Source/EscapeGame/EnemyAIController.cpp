@@ -8,6 +8,7 @@
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "EngineUtils.h"
+#include "Kismet/KismetSystemLibrary.h" // for draw debug line
 
 AEnemyAIController::AEnemyAIController(const class FObjectInitializer& ObjectInitializer)
 {
@@ -18,6 +19,8 @@ AEnemyAIController::AEnemyAIController(const class FObjectInitializer& ObjectIni
 	CurrentWaypointKeyName = "CurrentWaypoint";
 	EnemyTypeKeyName = "EnemyType";
 	TargetEnemyKeyName = "TargetEnemy";
+
+	DebugWaypoint = nullptr;
 
 	/* Initializes PlayerState so we can assign a team index to AI */
 	//bWantsPlayerState = true;
@@ -104,6 +107,18 @@ void AEnemyAIController::SetBlackboardEnemyType(EEnemyType NewType)
 	}
 }
 
+void AEnemyAIController::DrawDebugLineToTarget()
+{
+	if (DebugWaypoint != nullptr)
+	{
+		//Debug Line
+		AEnemyCharacter* Character = Cast<AEnemyCharacter>(GetPawn());
+		FVector start = Character->GetActorLocation();
+		FVector end = DebugWaypoint->GetActorLocation() + FVector(0, 0, 80);
+		UKismetSystemLibrary::DrawDebugLine(Character, start, end, FLinearColor::Red, 0.05f, 5.0f);
+	}	
+}
+
 void AEnemyAIController::FindWaypoint()
 {
 	UE_LOG(LogTemp, Error, TEXT("Find waypoint called"));
@@ -130,7 +145,9 @@ void AEnemyAIController::FindWaypoint()
 		// Pick random waypoint
 		int rand = FMath::RandRange(0, size - 1);
 
-		Cast<AEnemyCharacter>(GetControlledPawn())->SetPatrolPoints(true);
+		Cast<AEnemyCharacter>(GetPawn())->SetPatrolPoints(true);
+
+		DebugWaypoint = (Waypoints[rand]);
 
 		// Set current waypoint in BB
 		SetWaypoint(Waypoints[rand]);
@@ -139,8 +156,9 @@ void AEnemyAIController::FindWaypoint()
 	{
 		UE_LOG(LogTemp, Error, TEXT("Waypoint NOT set"));
 
-		Cast<AEnemyCharacter>(GetControlledPawn())->SetPatrolPoints(false);
+		Cast<AEnemyCharacter>(GetPawn())->SetPatrolPoints(false);
 
 		SetWaypoint(nullptr);
+		DebugWaypoint = nullptr;
 	}
 }

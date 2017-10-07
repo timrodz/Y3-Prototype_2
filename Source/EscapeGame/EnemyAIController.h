@@ -31,6 +31,8 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 
 	std::vector <AEnemyWaypoint*> Waypoints;
 
+	AEnemyWaypoint* DebugWaypoint;
+
 	UBehaviorTreeComponent* BehaviorComp;
 
 	UBlackboardComponent* BlackboardComp;
@@ -62,6 +64,8 @@ public:
 	void SetTargetEnemy(APawn* NewTarget);
 
 	void SetBlackboardEnemyType(EEnemyType NewType);
+
+	void DrawDebugLineToTarget();
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	void FindWaypoint();
