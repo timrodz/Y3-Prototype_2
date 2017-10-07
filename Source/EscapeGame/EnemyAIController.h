@@ -8,10 +8,12 @@
 #include "EnemyCharacter.h"
 #include "EnemyWaypoint.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
+#include "Actions/PawnAction.h"
+#include "BehaviorTree/BTTaskNode.h"
+#include <vector>
 #include "EnemyAIController.generated.h"
 
 //Runtime / AIModule / Classes / BehaviorTree / BehaviorTreeComponent.h
-
 
 UCLASS()
 class ESCAPEGAME_API AEnemyAIController : public AAIController
@@ -25,18 +27,16 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 
 	virtual void UnPossess() override;
 
+	bool bShouldWander;
+
+	std::vector <AEnemyWaypoint*> Waypoints;
+
 	UBehaviorTreeComponent* BehaviorComp;
 
 	UBlackboardComponent* BlackboardComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		FName TargetEnemyKeyName;
-
-	UPROPERTY(EditDefaultsOnly, Category = "AI")
-		FName PatrolLocationKeyName;
-
-	UPROPERTY(EditDefaultsOnly, Category = "AI")
-		FName TargetLocationKeyName;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		FName CurrentWaypointKeyName;
@@ -46,17 +46,25 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 	
 public:
 
+	UBTTaskNode* SetNextWaypoint;
+
 	AEnemyWaypoint* GetWaypoint();
 
 	AFirstPersonCharacterController* GetTargetEnemy();
 
 	void SetWaypoint(AEnemyWaypoint* NewWaypoint);
 
-	void SetTargetLocation(FVector TargetLocation);
+	void SetShouldWander(bool ShouldWander);
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	bool GetShouldWander();
 
 	void SetTargetEnemy(APawn* NewTarget);
 
 	void SetBlackboardEnemyType(EEnemyType NewType);
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	void FindWaypoint();
 
 	/** Returns BehaviorComp subobject **/
 	FORCEINLINE UBehaviorTreeComponent* GetBehaviorComp() const { return BehaviorComp; }

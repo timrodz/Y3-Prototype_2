@@ -2,10 +2,12 @@
 
 #include "EnemyAIController.h"
 #include "EnemyCharacter.h"
+#include "EnemyWaypoint.h"
 
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "EngineUtils.h"
 
 AEnemyAIController::AEnemyAIController(const class FObjectInitializer& ObjectInitializer)
 {
@@ -13,8 +15,6 @@ AEnemyAIController::AEnemyAIController(const class FObjectInitializer& ObjectIni
 	BlackboardComp = ObjectInitializer.CreateDefaultSubobject<UBlackboardComponent>(this, TEXT("BlackboardComp"));
 
 	/* Match with the AI/ZombieBlackboard */
-	TargetLocationKeyName = "TargetLocation";
-	PatrolLocationKeyName = "PatrolLocation";
 	CurrentWaypointKeyName = "CurrentWaypoint";
 	EnemyTypeKeyName = "EnemyType";
 	TargetEnemyKeyName = "TargetEnemy";
@@ -78,12 +78,14 @@ void AEnemyAIController::SetWaypoint(AEnemyWaypoint * NewWaypoint)
 	}
 }
 
-void AEnemyAIController::SetTargetLocation(FVector TargetLocation)
+void AEnemyAIController::SetShouldWander(bool ShouldWander)
 {
-	if (BlackboardComp)
-	{
-		BlackboardComp->SetValueAsVector(TargetLocationKeyName, TargetLocation);
-	}
+	bShouldWander = ShouldWander;
+}
+
+bool AEnemyAIController::GetShouldWander()
+{
+	return bShouldWander;
 }
 
 void AEnemyAIController::SetTargetEnemy(APawn * NewTarget)
@@ -99,5 +101,46 @@ void AEnemyAIController::SetBlackboardEnemyType(EEnemyType NewType)
 	if (BlackboardComp)
 	{
 		BlackboardComp->SetValueAsEnum(EnemyTypeKeyName, (uint8)NewType);
+	}
+}
+
+void AEnemyAIController::FindWaypoint()
+{
+	UE_LOG(LogTemp, Error, TEXT("Find waypoint called"));
+
+	Waypoints.clear();
+
+	// Find all waypoints in map
+	for (TActorIterator<AEnemyWaypoint> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		AEnemyWaypoint *WP = *ActorItr;
+		// Push to waypoints vector
+		Waypoints.push_back(WP);
+
+		//ClientMessage(ActorItr->GetName());
+		//ClientMessage(ActorItr->GetActorLocation().ToString());
+	}
+	
+	int size = Waypoints.size();
+
+	if (size != 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Waypoint set"));
+
+		// Pick random waypoint
+		int rand = FMath::RandRange(0, size - 1);
+
+		Cast<AEnemyCharacter>(GetControlledPawn())->SetPatrolPoints(true);
+
+		// Set current waypoint in BB
+		SetWaypoint(Waypoints[rand]);
+	}
+	else // No waypoints in map
+	{
+		UE_LOG(LogTemp, Error, TEXT("Waypoint NOT set"));
+
+		Cast<AEnemyCharacter>(GetControlledPawn())->SetPatrolPoints(false);
+
+		SetWaypoint(nullptr);
 	}
 }

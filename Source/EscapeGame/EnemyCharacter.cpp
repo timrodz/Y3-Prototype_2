@@ -13,6 +13,9 @@ AEnemyCharacter::AEnemyCharacter(const class FObjectInitializer& ObjectInitializ
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	bSensedTarget = false;
+	bPatrolPointsSet = false;
+
 	// Assign AI controller class in blueprint extension of this class
 
 	/* Our sensing component to detect players by visibility and noise checks. */
@@ -48,6 +51,11 @@ void AEnemyCharacter::BeginPlay()
 		PawnSensingComp->OnSeePawn.AddDynamic(this, &AEnemyCharacter::OnSeePlayer);
 		PawnSensingComp->OnHearNoise.AddDynamic(this, &AEnemyCharacter::OnHearNoise);
 	}	
+
+	DebugTextRender = this->FindComponentByClass<UTextRenderComponent>();
+	AIController = Cast<AEnemyAIController>(GetController());
+	AIController->SetShouldWander(true);
+	AIController->SetWaypoint(nullptr);
 }
 
 // Called every frame
@@ -61,7 +69,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	if (bSensedTarget && (GetWorld()->TimeSeconds - LastSeenTime) > SenseTimeOut
 		&& (GetWorld()->TimeSeconds - LastHeardTime) > SenseTimeOut)
 	{
-		AEnemyAIController* AIController = Cast<AEnemyAIController>(GetController());
+		AIController = Cast<AEnemyAIController>(GetController());
 		if (AIController)
 		{
 			bSensedTarget = false;
@@ -70,6 +78,15 @@ void AEnemyCharacter::Tick(float DeltaTime)
 
 			UE_LOG(LogTemp, Warning, TEXT("RESET TARGET TO NULL"));
 		}
+	}
+
+	if (bPatrolPointsSet && !bSensedTarget)
+	{
+		DebugTextRender->SetText("Patrolling");
+	}
+	else if(!bPatrolPointsSet && !bSensedTarget)
+	{
+		DebugTextRender->SetText("Wait");
 	}
 }
 
@@ -91,12 +108,12 @@ void AEnemyCharacter::OnSeePlayer(APawn * Pawn)
 	LastSeenTime = GetWorld()->GetTimeSeconds();
 	bSensedTarget = true;
 
-	AEnemyAIController* AIController = Cast<AEnemyAIController>(GetController());
+	AIController = Cast<AEnemyAIController>(GetController());
 	AFirstPersonCharacterController* SensedPawn = Cast<AFirstPersonCharacterController>(Pawn);
 	if (AIController)// && SensedPawn->IsAlive())
 	{
 		AIController->SetTargetEnemy(SensedPawn);
-		AIController->SetTargetLocation(SensedPawn->GetActorLocation());
+		DebugTextRender->SetText("Chasing-Seen");
 	}
 }
 
@@ -117,11 +134,12 @@ void AEnemyCharacter::OnHearNoise(APawn * PawnInstigator, const FVector & Locati
 	bSensedTarget = true;
 	LastHeardTime = GetWorld()->GetTimeSeconds();
 
-	AEnemyAIController* AIController = Cast<AEnemyAIController>(GetController());
+	AIController = Cast<AEnemyAIController>(GetController());
 	if (AIController)
 	{
 		AIController->SetTargetEnemy(PawnInstigator);
-		AIController->SetTargetLocation(PawnInstigator->GetActorLocation()); //  change to some kind of delay??? Watch vids etc
+		//AIController->SetTargetLocation(PawnInstigator->GetActorLocation()); //  change to some kind of delay??? Watch vids etc
+		DebugTextRender->SetText("Chasing-Heard");
 	}
 }
 
@@ -129,12 +147,18 @@ void AEnemyCharacter::SetEnemyType(EEnemyType NewType)
 {
 	EnemyType = NewType;
 
-	AEnemyAIController* AIController = Cast<AEnemyAIController>(GetController());
+	AIController = Cast<AEnemyAIController>(GetController());
 	if (AIController)
 	{
 		AIController->SetBlackboardEnemyType(NewType);
 	}
 }
+
+void AEnemyCharacter::SetPatrolPoints(bool b)
+{
+	bPatrolPointsSet = b;
+}
+
 
 // Called to bind functionality to input
 //void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
