@@ -13,8 +13,6 @@
 #include <vector>
 #include "EnemyAIController.generated.h"
 
-//Runtime / AIModule / Classes / BehaviorTree / BehaviorTreeComponent.h
-
 UCLASS()
 class ESCAPEGAME_API AEnemyAIController : public AAIController
 {
@@ -41,6 +39,9 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 		FName TargetEnemyKeyName;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
+		FName TargetLocationKeyName;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		FName CurrentWaypointKeyName;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
@@ -62,6 +63,10 @@ public:
 	bool GetShouldWander();
 
 	void SetTargetEnemy(APawn* NewTarget);
+
+	void SetTargetLocation(FVector location);
+
+	FVector GetTheTargetLocation();
 
 	void SetBlackboardEnemyType(EEnemyType NewType);
 

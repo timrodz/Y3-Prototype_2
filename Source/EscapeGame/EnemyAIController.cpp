@@ -19,6 +19,7 @@ AEnemyAIController::AEnemyAIController(const class FObjectInitializer& ObjectIni
 	CurrentWaypointKeyName = "CurrentWaypoint";
 	EnemyTypeKeyName = "EnemyType";
 	TargetEnemyKeyName = "TargetEnemy";
+	TargetLocationKeyName = "TargetLocation";
 
 	DebugWaypoint = nullptr;
 
@@ -53,7 +54,7 @@ void AEnemyAIController::UnPossess()
 	BehaviorComp->StopTree();
 }
 
-AEnemyWaypoint * AEnemyAIController::GetWaypoint()
+AEnemyWaypoint* AEnemyAIController::GetWaypoint()
 {
 	if (BlackboardComp)
 	{
@@ -99,6 +100,25 @@ void AEnemyAIController::SetTargetEnemy(APawn * NewTarget)
 	}
 }
 
+void AEnemyAIController::SetTargetLocation(FVector location)
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsVector(TargetLocationKeyName, location);
+	}
+}
+
+FVector AEnemyAIController::GetTheTargetLocation()
+{
+	if (BlackboardComp)
+	{
+		return BlackboardComp->GetValueAsVector(TargetLocationKeyName);
+	}
+
+	UE_LOG(LogTemp, Error, TEXT("No target location found on blackboard"));
+	return FVector(0, 0, 0);
+}
+
 void AEnemyAIController::SetBlackboardEnemyType(EEnemyType NewType)
 {
 	if (BlackboardComp)
@@ -121,7 +141,7 @@ void AEnemyAIController::DrawDebugLineToTarget()
 
 void AEnemyAIController::FindWaypoint()
 {
-	UE_LOG(LogTemp, Error, TEXT("Find waypoint called"));
+	//UE_LOG(LogTemp, Error, TEXT("Find waypoint called"));
 
 	Waypoints.clear();
 
@@ -140,7 +160,7 @@ void AEnemyAIController::FindWaypoint()
 
 	if (size != 0)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Waypoint set"));
+		UE_LOG(LogTemp, Warning, TEXT("Waypoint set"));
 
 		// Pick random waypoint
 		int rand = FMath::RandRange(0, size - 1);
@@ -154,7 +174,7 @@ void AEnemyAIController::FindWaypoint()
 	}
 	else // No waypoints in map
 	{
-		UE_LOG(LogTemp, Error, TEXT("Waypoint NOT set"));
+		UE_LOG(LogTemp, Warning, TEXT("Waypoint NOT set"));
 
 		Cast<AEnemyCharacter>(GetPawn())->SetPatrolPoints(false);
 
