@@ -7,7 +7,7 @@
 #include "BreatheMechanic.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ESCAPEGAME_API UBreatheMechanic : public UActorComponent
 {
 	GENERATED_BODY()
