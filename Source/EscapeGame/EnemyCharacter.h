@@ -27,10 +27,21 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 	/* Last time the player was heard */
 	float LastHeardTime;
 
+	float TimeArrivedAtTarget;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+		float TimeToWaitAtTargetLocation;
+
+
+
 	/* Resets after sense time-out to avoid unnecessary clearing of target each tick */
 	bool bSensedTarget;
 
 	bool bPatrolPointsSet;
+
+	bool bIsCloseToTargetLocation;
+
+	bool bTargetTimerSet;
 
 	class AEnemyAIController* AIController;
 
@@ -76,6 +87,8 @@ public:
 	void SetEnemyType(EEnemyType NewType);
 
 	void SetPatrolPoints(bool b);
+
+	bool IsCloseToTargetLocation();
 };
 
 

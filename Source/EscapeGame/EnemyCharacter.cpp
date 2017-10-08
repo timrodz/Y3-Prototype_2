@@ -15,6 +15,8 @@ AEnemyCharacter::AEnemyCharacter(const class FObjectInitializer& ObjectInitializ
 
 	bSensedTarget = false;
 	bPatrolPointsSet = false;
+	bIsCloseToTargetLocation = false;
+	bTargetTimerSet = false;
 
 	// Assign AI controller class in blueprint extension of this class
 
@@ -36,6 +38,7 @@ AEnemyCharacter::AEnemyCharacter(const class FObjectInitializer& ObjectInitializ
 	/* Set enemy defaults */
 	EnemyType = EEnemyType::Standard;
 	SenseTimeOut = 2.5f;
+	TimeToWaitAtTargetLocation = 3.0f;
 }
 
 
@@ -65,30 +68,57 @@ void AEnemyCharacter::Tick(float DeltaTime)
 
 	//UE_LOG(LogTemp, Warning, TEXT("Time since seen: %f   Time since heard: %f"), GetWorld()->TimeSeconds - LastSeenTime, GetWorld()->TimeSeconds - LastHeardTime);
 
-	/* Check if the last time we sensed a player is beyond the time out value to prevent bot from endlessly following a player. */
-	if (bSensedTarget && (GetWorld()->TimeSeconds - LastSeenTime) > SenseTimeOut
-		&& (GetWorld()->TimeSeconds - LastHeardTime) > SenseTimeOut)
+	if (bSensedTarget)
 	{
-		AIController = Cast<AEnemyAIController>(GetController());
-		if (AIController)
-		{
-			bSensedTarget = false;
-			/* Reset */
-			AIController->SetTargetEnemy(nullptr);
+		bIsCloseToTargetLocation = IsCloseToTargetLocation();
 
-			UE_LOG(LogTemp, Warning, TEXT("RESET TARGET TO NULL"));
+		if (bIsCloseToTargetLocation && !bTargetTimerSet)
+		{
+			TimeArrivedAtTarget = GetWorld()->TimeSeconds;
+			bTargetTimerSet = true;
+			UE_LOG(LogTemp, Warning, TEXT("At Target Timer Started"));
+		}
+		else if (!bIsCloseToTargetLocation)
+		{
+			bTargetTimerSet = false;
+			TimeArrivedAtTarget = 0.0f;
+		}
+	}
+
+	/* Check if the last time we sensed a player is beyond the time out value to prevent bot from endlessly following a player. */
+	if (bIsCloseToTargetLocation && bSensedTarget && (GetWorld()->TimeSeconds - LastSeenTime) > SenseTimeOut
+		&& (GetWorld()->TimeSeconds - LastHeardTime) > SenseTimeOut)// && IsCloseToTargetLocation())
+//	if (bIsCloseToTargetLocation && bSensedTarget)
+	{
+		float Time = GetWorld()->TimeSeconds - TimeArrivedAtTarget;
+
+		//UE_LOG(LogTemp, Warning, TEXT("Time at target: %f"), Time);
+
+		if (GetWorld()->TimeSeconds - TimeArrivedAtTarget > TimeToWaitAtTargetLocation)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("At Target Timer Finished"));
+
+			AIController = Cast<AEnemyAIController>(GetController());
+			if (AIController)
+			{
+				bSensedTarget = false;
+				/* Reset */
+				AIController->SetTargetEnemy(nullptr);
+
+				UE_LOG(LogTemp, Warning, TEXT("Rest Target To Null"));
+			}
 		}
 	}
 
 	if (bPatrolPointsSet && !bSensedTarget)
 	{
-		DebugTextRender->SetText("Patrolling");
+		DebugTextRender->SetText(FText::FromString("Patrolling"));
 		AIController = Cast<AEnemyAIController>(GetController());
 		AIController->DrawDebugLineToTarget();
 	}
 	else if(!bPatrolPointsSet && !bSensedTarget)
 	{
-		DebugTextRender->SetText("Wait");
+		DebugTextRender->SetText(FText::FromString("Wait"));
 	}
 }
 
@@ -104,7 +134,7 @@ void AEnemyCharacter::OnSeePlayer(APawn * Pawn)
 	//	//BroadcastUpdateAudioLoop(true);
 	//}
 
-	UE_LOG(LogTemp, Error, TEXT("Player SEEN"));
+	//UE_LOG(LogTemp, Warning, TEXT("Player SEEN"));
 
 	/* Keep track of the time the player was last sensed in order to clear the target */
 	LastSeenTime = GetWorld()->GetTimeSeconds();
@@ -112,10 +142,12 @@ void AEnemyCharacter::OnSeePlayer(APawn * Pawn)
 
 	AIController = Cast<AEnemyAIController>(GetController());
 	AFirstPersonCharacterController* SensedPawn = Cast<AFirstPersonCharacterController>(Pawn);
+
 	if (AIController)// && SensedPawn->IsAlive())
 	{
 		AIController->SetTargetEnemy(SensedPawn);
-		DebugTextRender->SetText("Chasing-Seen");
+		AIController->SetTargetLocation(SensedPawn->GetActorLocation());
+		DebugTextRender->SetText(FText::FromString("Chasing-Seen"));
 	}
 }
 
@@ -131,7 +163,7 @@ void AEnemyCharacter::OnHearNoise(APawn * PawnInstigator, const FVector & Locati
 	//	BroadcastUpdateAudioLoop(true);
 	//}
 
-	UE_LOG(LogTemp, Error, TEXT("HEARD Noise"));
+	//UE_LOG(LogTemp, Warning, TEXT("HEARD Noise"));
 
 	bSensedTarget = true;
 	LastHeardTime = GetWorld()->GetTimeSeconds();
@@ -140,8 +172,9 @@ void AEnemyCharacter::OnHearNoise(APawn * PawnInstigator, const FVector & Locati
 	if (AIController)
 	{
 		AIController->SetTargetEnemy(PawnInstigator);
+		AIController->SetTargetLocation(PawnInstigator->GetActorLocation());
 		//AIController->SetTargetLocation(PawnInstigator->GetActorLocation()); //  change to some kind of delay??? Watch vids etc
-		DebugTextRender->SetText("Chasing-Heard");
+		DebugTextRender->SetText(FText::FromString("Chasing-Heard"));
 	}
 }
 
@@ -159,6 +192,25 @@ void AEnemyCharacter::SetEnemyType(EEnemyType NewType)
 void AEnemyCharacter::SetPatrolPoints(bool b)
 {
 	bPatrolPointsSet = b;
+}
+
+bool AEnemyCharacter::IsCloseToTargetLocation()
+{
+	AIController = Cast<AEnemyAIController>(GetController());
+	FVector TargetLoc = AIController->GetTheTargetLocation();
+	FVector Loc = this->GetActorLocation();
+
+	if (Loc.X - TargetLoc.X < 50 && Loc.Y - TargetLoc.Y < 50)
+	{
+//		UE_LOG(LogTemp, Error, TEXT("At Target Location"));
+		bIsCloseToTargetLocation = true;
+		return true;
+	}
+
+	bIsCloseToTargetLocation = false;
+//	UE_LOG(LogTemp, Error, TEXT("NOT At Target Location!   Target = %f,%f    Me = %f,%f"), TargetLoc.X, TargetLoc.Y, Loc.X, Loc.Y);
+	return false;
+
 }
 
 
