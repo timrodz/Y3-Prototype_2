@@ -44,10 +44,11 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Variables")
 		bool CanHoldBreath = true;
+	
+	//NOT NEEDED, CAN'T CALL FROM OUTSIDE BP FOR SOME REASON?
+	//UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Hold Breath")
+	//	void ToggleBreathState();
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Hold Breath")
-		void ToggleBreathState();
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "Hold Breath")
-		void ResetBreathState();
+	//UFUNCTION(BlueprintImplementableEvent, Category = "Hold Breath")
+	//	void ResetBreathState();
 };

@@ -31,4 +31,3 @@ void UBreatheMechanic::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 	// ...
 }
-
