@@ -41,6 +41,10 @@ AEnemyCharacter::AEnemyCharacter(const class FObjectInitializer& ObjectInitializ
 	TimeToWaitAtTargetLocation = 3.0f;
 }
 
+bool AEnemyCharacter::HasSensedTarget()
+{
+	return bSensedTarget;
+}
 
 // Called when the game starts or when spawned
 void AEnemyCharacter::BeginPlay()
@@ -54,6 +58,8 @@ void AEnemyCharacter::BeginPlay()
 		PawnSensingComp->OnSeePawn.AddDynamic(this, &AEnemyCharacter::OnSeePlayer);
 		PawnSensingComp->OnHearNoise.AddDynamic(this, &AEnemyCharacter::OnHearNoise);
 	}	
+	
+	this->OnActorHit.AddDynamic(this, &AEnemyCharacter::OnHit);
 
 	DebugTextRender = this->FindComponentByClass<UTextRenderComponent>();
 	AIController = Cast<AEnemyAIController>(GetController());
@@ -175,6 +181,17 @@ void AEnemyCharacter::OnHearNoise(APawn * PawnInstigator, const FVector & Locati
 		AIController->SetTargetLocation(PawnInstigator->GetActorLocation());
 		//AIController->SetTargetLocation(PawnInstigator->GetActorLocation()); //  change to some kind of delay??? Watch vids etc
 		DebugTextRender->SetText(FText::FromString("Chasing-Heard"));
+	}
+}
+
+void AEnemyCharacter::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
+{
+	AFirstPersonCharacterController* SensedPawn = Cast<AFirstPersonCharacterController>(OtherActor);
+
+	if (SensedPawn)
+	{
+		// UE_LOG(LogTemp, Warning, TEXT("Player Hit"));
+		OnSeePlayer(SensedPawn);
 	}
 }
 
