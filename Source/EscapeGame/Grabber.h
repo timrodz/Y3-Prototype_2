@@ -28,6 +28,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Raycast")
 	float Reach = 300.f;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Pickup")
+	float ThrowStrength = 100.0f;
+
+	// Called when Left-click (Throw button) is pressed
+	UFUNCTION(BlueprintCallable, Category = "Throw")
+	void Throw(FVector direction);
+
 private:
 
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
@@ -39,6 +46,8 @@ private:
 
 	// Called when grab is released
 	void Release();
+
+
 
 	// Find (assumed) attached phyics handle
 	void FindPhysicsHandleComponent();
