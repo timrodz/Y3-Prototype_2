@@ -33,7 +33,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Variables")
 		float BreathRechargeMultiplier = 20.0f;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Variables")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables")
 		float BreathDecreaseMultiplier = 35.0f;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Variables")

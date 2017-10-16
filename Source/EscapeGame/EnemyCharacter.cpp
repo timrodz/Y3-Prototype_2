@@ -81,11 +81,12 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	//UE_LOG(LogTemp, Warning, TEXT("New: %s    Old: %s"), *this->GetActorLocation().ToString(), *LastLocation.ToString());
 	//UE_LOG(LogTemp, Warning, TEXT("Time since seen: %f   Time since heard: %f"), GetWorld()->TimeSeconds - LastSeenTime, GetWorld()->TimeSeconds - LastHeardTime);
 
-	CheckIfStuck(this->GetActorLocation(), LastLocation);
+	
 
 	if (bSensedTarget)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("SENSED TARGET"));
+		CheckIfStuck(this->GetActorLocation(), LastLocation);
 
 		bIsCloseToTargetLocation = IsCloseToTargetLocation();
 
