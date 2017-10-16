@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/TextRenderComponent.h"
 #include "EnemyCharacter.generated.h"
 
-UENUM()
+UENUM(BlueprintType)
 enum class EEnemyType : uint8
 {
-	/* Does not move, remains in place until a player is spotted */
-	Standard,
+	// For when we have more enemies
 
-	/* Patrols a region until a player is spotted */
+	Standard,
 	Other,
 };
 
@@ -27,6 +27,23 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 	/* Last time the player was heard */
 	float LastHeardTime;
 
+	float TimeArrivedAtTarget;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+		float TimeToWaitAtTargetLocation;
+
+
+
+	/* Resets after sense time-out to avoid unnecessary clearing of target each tick */
+	bool bSensedTarget;
+
+	bool bPatrolPointsSet;
+
+	bool bIsCloseToTargetLocation;
+
+	bool bTargetTimerSet;
+
+	class AEnemyAIController* AIController;
 
 	/* Time-out value to clear the sensed position of the player. Should be higher than Sense interval in the PawnSense component not never miss sense ticks. */
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
@@ -35,12 +52,8 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, Category = "AI")
 		class UPawnSensingComponent* PawnSensingComp;
 
-	/* Resets after sense time-out to avoid unnecessary clearing of target each tick */
-	bool bSensedTarget;
-
 	UFUNCTION()
 	virtual void BeginPlay() override;
-	
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -60,7 +73,7 @@ protected:
 
 public:
 
-	AEnemyCharacter();
+	AEnemyCharacter(const class FObjectInitializer& ObjectInitializer);
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 		EEnemyType EnemyType;
@@ -68,8 +81,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		class UBehaviorTree* BehaviorTree;
 
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+		UTextRenderComponent* DebugTextRender;
+		
 	void SetEnemyType(EEnemyType NewType);
 
+	void SetPatrolPoints(bool b);
+
+	bool IsCloseToTargetLocation();
 };
 
 
