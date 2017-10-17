@@ -33,6 +33,8 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 
 	bool bEventActive;
 
+	bool bTargetLocationSet;
+
 	std::vector <AEnemyWaypoint*> Waypoints;
 
 	AEnemyWaypoint* DebugWaypoint;
@@ -53,8 +55,8 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		FName EnemyTypeKeyName;
 
-	UPROPERTY(EditDefaultsOnly, Category = "AI")
-		FName ManualLocationKeyName;
+//	UPROPERTY(EditDefaultsOnly, Category = "AI")
+//		FName ManualLocationKeyName;
 	
 public:
 
@@ -77,15 +79,19 @@ public:
 
 	void SetShouldWander(bool ShouldWander);
 
-	void SetTargetLocation(FVector location);
-	FVector GetTheTargetLocation();
+	bool IsTargetLocationSet();
 
-	void SetManualLocation(FVector location);
-	FVector GetManualLocation();
+	void SetTargetLocation(FVector location);
+	FVector GetTargetLocation();
+
+	//void SetManualLocation(FVector location);
+	//FVector GetManualLocation();
 
 	void SetBlackboardEnemyType(EEnemyType NewType);
 
+	UFUNCTION(BlueprintCallable, Category = "AI")
 	bool IsEventActive();
+
 	void SetEventActive(bool _b);
 
 	void DrawDebugLineToTarget();

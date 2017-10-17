@@ -20,10 +20,10 @@ AEnemyAIController::AEnemyAIController(const class FObjectInitializer& ObjectIni
 	EnemyTypeKeyName = "EnemyType";
 	TargetEnemyKeyName = "TargetEnemy";
 	TargetLocationKeyName = "TargetLocation";
-	ManualLocationKeyName = "ManualLocation";
+//	ManualLocationKeyName = "ManualLocation";
 
 	DebugWaypoint = nullptr;
-	bEventActive = false;
+	bEventActive = true;
 
 	/* Initializes PlayerState so we can assign a team index to AI */
 	//bWantsPlayerState = true;
@@ -91,6 +91,11 @@ void AEnemyAIController::SetShouldWander(bool ShouldWander)
 	bShouldWander = ShouldWander;
 }
 
+bool AEnemyAIController::IsTargetLocationSet()
+{
+	return bTargetLocationSet;
+}
+
 bool AEnemyAIController::GetShouldWander()
 {
 	return bShouldWander;
@@ -111,10 +116,11 @@ void AEnemyAIController::SetTargetLocation(FVector location)
 	if (BlackboardComp)
 	{
 		BlackboardComp->SetValueAsVector(TargetLocationKeyName, location);
+		bTargetLocationSet = true;
 	}
 }
 
-FVector AEnemyAIController::GetTheTargetLocation()
+FVector AEnemyAIController::GetTargetLocation()
 {
 	if (BlackboardComp)
 	{
@@ -125,24 +131,24 @@ FVector AEnemyAIController::GetTheTargetLocation()
 	return FVector(0, 0, 0);
 }
 
-void AEnemyAIController::SetManualLocation(FVector location)
-{
-	if (BlackboardComp)
-	{
-		BlackboardComp->SetValueAsVector(ManualLocationKeyName, location);
-	}
-}
+//void AEnemyAIController::SetManualLocation(FVector location)
+//{
+//	if (BlackboardComp)
+//	{
+//		BlackboardComp->SetValueAsVector(ManualLocationKeyName, location);
+//	}
+//}
 
-FVector AEnemyAIController::GetManualLocation()
-{
-	if (BlackboardComp)
-	{
-		return BlackboardComp->GetValueAsVector(ManualLocationKeyName);
-	}
-
-	UE_LOG(LogTemp, Error, TEXT("No manual location found on blackboard"));
-	return FVector(0, 0, 0);
-}
+//FVector AEnemyAIController::GetManualLocation()
+//{
+//	if (BlackboardComp)
+//	{
+//		return BlackboardComp->GetValueAsVector(ManualLocationKeyName);
+//	}
+//
+//	UE_LOG(LogTemp, Error, TEXT("No manual location found on blackboard"));
+//	return FVector(0, 0, 0);
+//}
 
 void AEnemyAIController::SetBlackboardEnemyType(EEnemyType NewType)
 {
