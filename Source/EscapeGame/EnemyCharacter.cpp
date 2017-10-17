@@ -81,7 +81,11 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	//UE_LOG(LogTemp, Warning, TEXT("New: %s    Old: %s"), *this->GetActorLocation().ToString(), *LastLocation.ToString());
 	//UE_LOG(LogTemp, Warning, TEXT("Time since seen: %f   Time since heard: %f"), GetWorld()->TimeSeconds - LastSeenTime, GetWorld()->TimeSeconds - LastHeardTime);
 
-	
+	AIController = Cast<AEnemyAIController>(GetController());
+	if (AIController->IsEventActive())
+	{
+		return;
+	}
 
 	if (bSensedTarget)
 	{
