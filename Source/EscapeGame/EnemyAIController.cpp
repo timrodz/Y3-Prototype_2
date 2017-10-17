@@ -20,11 +20,15 @@ AEnemyAIController::AEnemyAIController(const class FObjectInitializer& ObjectIni
 	EnemyTypeKeyName = "EnemyType";
 	TargetEnemyKeyName = "TargetEnemy";
 	TargetLocationKeyName = "TargetLocation";
+	ManualLocationKeyName = "ManualLocation";
 
 	DebugWaypoint = nullptr;
+	bEventActive = false;
 
 	/* Initializes PlayerState so we can assign a team index to AI */
 	//bWantsPlayerState = true;
+
+	//OnTestDelegate.AddDynamic(this, &EnemeyAIController::TestFunction);
 }
 
 void AEnemyAIController::Possess(APawn * InPawn)
@@ -94,6 +98,8 @@ bool AEnemyAIController::GetShouldWander()
 
 void AEnemyAIController::SetTargetEnemy(APawn * NewTarget)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Set target enemy called"));
+
 	if (BlackboardComp)
 	{
 		BlackboardComp->SetValueAsObject(TargetEnemyKeyName, NewTarget);
@@ -119,12 +125,41 @@ FVector AEnemyAIController::GetTheTargetLocation()
 	return FVector(0, 0, 0);
 }
 
+void AEnemyAIController::SetManualLocation(FVector location)
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsVector(ManualLocationKeyName, location);
+	}
+}
+
+FVector AEnemyAIController::GetManualLocation()
+{
+	if (BlackboardComp)
+	{
+		return BlackboardComp->GetValueAsVector(ManualLocationKeyName);
+	}
+
+	UE_LOG(LogTemp, Error, TEXT("No manual location found on blackboard"));
+	return FVector(0, 0, 0);
+}
+
 void AEnemyAIController::SetBlackboardEnemyType(EEnemyType NewType)
 {
 	if (BlackboardComp)
 	{
 		BlackboardComp->SetValueAsEnum(EnemyTypeKeyName, (uint8)NewType);
 	}
+}
+
+bool AEnemyAIController::IsEventActive()
+{
+	return bEventActive;
+}
+
+void AEnemyAIController::SetEventActive(bool _b)
+{
+	bEventActive = _b;
 }
 
 void AEnemyAIController::DrawDebugLineToTarget()

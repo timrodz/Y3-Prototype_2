@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Components/TextRenderComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "EnemyCharacter.generated.h"
 
 UENUM(BlueprintType)
@@ -32,16 +33,24 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		float TimeToWaitAtTargetLocation;
 
-
-
 	/* Resets after sense time-out to avoid unnecessary clearing of target each tick */
-	bool bSensedTarget;
-
+	
 	bool bPatrolPointsSet;
 
 	bool bIsCloseToTargetLocation;
 
 	bool bTargetTimerSet;
+
+	bool bSensedTarget;
+
+	FVector LastLocation;
+
+	float StuckTimer;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	float StuckThreshold;
+
+	bool StuckTimerSet;
 
 	class AEnemyAIController* AIController;
 
@@ -64,13 +73,18 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 protected:
 	// Called when the game starts or when spawned
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		void OnSeePlayer(APawn* Pawn);
 
-	UFUNCTION()
-		void OnHearNoise(APawn* PawnInstigator, const FVector& Location, float Volume);
-	
+	UFUNCTION(BlueprintCallable)
+		void OnHearPlayer(APawn* PawnInstigator, const FVector& Location, float Volume);
 
+	UFUNCTION()
+		void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+
+	UFUNCTION(BlueprintCallable)
+		bool HasSensedTarget();
+	
 public:
 
 	AEnemyCharacter(const class FObjectInitializer& ObjectInitializer);
@@ -88,7 +102,12 @@ public:
 
 	void SetPatrolPoints(bool b);
 
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+		float TargetDistanceThreshold;
+
 	bool IsCloseToTargetLocation();
+
+	void CheckIfStuck(FVector CurrentPos, FVector LastPos);
 };
 
 
