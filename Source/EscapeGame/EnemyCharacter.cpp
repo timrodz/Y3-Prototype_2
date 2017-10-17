@@ -252,7 +252,6 @@ bool AEnemyCharacter::IsCloseToTargetLocation()
 	bIsCloseToTargetLocation = false;
 	//UE_LOG(LogTemp, Error, TEXT("NOT At Target Location!   Target = %f,%f    Me = %f,%f"), TargetLoc.X, TargetLoc.Y, Loc.X, Loc.Y);
 	return false;
-
 }
 
 void AEnemyCharacter::CheckIfStuck(FVector CurrentPos, FVector LastPos)
@@ -268,15 +267,20 @@ void AEnemyCharacter::CheckIfStuck(FVector CurrentPos, FVector LastPos)
 			UE_LOG(LogTemp, Warning, TEXT("Stuck timer set"));
 		}
 
-		if (GetWorld()->TimeSeconds - StuckTimer > StuckThreshold)
+		if (GetWorld()->TimeSeconds - StuckTimer > StuckThreshold && StuckTimerSet)
 		{
 			bSensedTarget = false;
+			AIController->SetTargetEnemy(nullptr);
 			StuckTimerSet = false;
 			UE_LOG(LogTemp, Error, TEXT("Stuck TIMER REACHED MAX!"));
 		}
 
 		UE_LOG(LogTemp, Warning, TEXT("Timer: %F"), GetWorld()->TimeSeconds - StuckTimer);
+	}
 
+	else
+	{
+		StuckTimerSet = false;
 	}
 }
 
