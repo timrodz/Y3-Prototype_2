@@ -27,8 +27,7 @@ AEnemyAIController::AEnemyAIController(const class FObjectInitializer& ObjectIni
 
 	/* Initializes PlayerState so we can assign a team index to AI */
 	//bWantsPlayerState = true;
-
-	//OnTestDelegate.AddDynamic(this, &EnemeyAIController::TestFunction);
+	
 }
 
 void AEnemyAIController::Possess(APawn * InPawn)
@@ -216,4 +215,9 @@ void AEnemyAIController::FindWaypoint()
 		SetWaypoint(nullptr);
 		DebugWaypoint = nullptr;
 	}
+}
+
+void AEnemyAIController::OnHearNoise(FVector location)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, "HEAR NOISE");
 }
