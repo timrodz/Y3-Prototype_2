@@ -113,7 +113,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 		{
 			TimeArrivedAtTarget = GetWorld()->TimeSeconds;
 			bTargetTimerSet = true;
-			UE_LOG(LogTemp, Warning, TEXT("At Target Timer Started"));
+			//UE_LOG(LogTemp, Warning, TEXT("At Target Timer Started"));
 		}
 		else if (!bIsCloseToTargetLocation)
 		{
@@ -133,18 +133,18 @@ void AEnemyCharacter::Tick(float DeltaTime)
 
 		if (GetWorld()->TimeSeconds - TimeArrivedAtTarget > TimeToWaitAtTargetLocation)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("At Target Timer Finished"));
+			//UE_LOG(LogTemp, Warning, TEXT("At Target Timer Finished"));
 
 			AIController = Cast<AEnemyAIController>(GetController());
 			if (AIController)
 			{
 				bSensedTarget = false;
-				UE_LOG(LogTemp, Warning, TEXT("Sensed target false"));
+			//	UE_LOG(LogTemp, Warning, TEXT("Sensed target false"));
 
 				/* Reset */
 				AIController->SetTargetEnemy(nullptr);
 
-				UE_LOG(LogTemp, Warning, TEXT("Rest Target To Null"));
+			//	UE_LOG(LogTemp, Warning, TEXT("Rest Target To Null"));
 			}
 		}
 	}
@@ -176,7 +176,7 @@ void AEnemyCharacter::OnSeePlayer(APawn * Pawn)
 	//	//BroadcastUpdateAudioLoop(true);
 	//}
 
-	UE_LOG(LogTemp, Warning, TEXT("Player SEEN"));
+	//UE_LOG(LogTemp, Warning, TEXT("Player SEEN"));
 
 	/* Keep track of the time the player was last sensed in order to clear the target */
 	LastSeenTime = GetWorld()->GetTimeSeconds();
@@ -205,14 +205,17 @@ void AEnemyCharacter::OnHearPlayer(APawn * PawnInstigator, const FVector & Locat
 	//	BroadcastUpdateAudioLoop(true);
 	//}
 
-	UE_LOG(LogTemp, Warning, TEXT("HEARD Noise"));
+	//UE_LOG(LogTemp, Warning, TEXT("HEARD Noise"));
+
+	float DistanceToNoise = FVector::Dist(this->GetActorLocation(), PawnInstigator->GetActorLocation());
+	UE_LOG(LogTemp, Warning, TEXT("Distance to noise: %f"), DistanceToNoise);
 
 	bSensedTarget = true;
 	LastHeardTime = GetWorld()->GetTimeSeconds();
 
 	AIController = Cast<AEnemyAIController>(GetController());
 
-	UE_LOG(LogTemp, Warning, TEXT("Sensed target set to true"));
+	//UE_LOG(LogTemp, Warning, TEXT("Sensed target set to true"));
 
 	if (AIController)
 	{
@@ -263,7 +266,7 @@ bool AEnemyCharacter::IsCloseToTargetLocation()
 
 	if (Loc.X - TargetLoc.X < TargetDistanceThreshold && Loc.Y - TargetLoc.Y < TargetDistanceThreshold)
 	{
-		UE_LOG(LogTemp, Error, TEXT("At Target Location"));
+		//UE_LOG(LogTemp, Error, TEXT("At Target Location"));
 		bIsCloseToTargetLocation = true;
 		return true;
 	}
@@ -283,7 +286,7 @@ void AEnemyCharacter::CheckIfStuck(FVector CurrentPos, FVector LastPos)
 		{
 			StuckTimer = GetWorld()->TimeSeconds;
 			StuckTimerSet = true;
-			UE_LOG(LogTemp, Warning, TEXT("Stuck timer set"));
+			//UE_LOG(LogTemp, Warning, TEXT("Stuck timer set"));
 		}
 
 		if (GetWorld()->TimeSeconds - StuckTimer > StuckThreshold && StuckTimerSet)
@@ -291,10 +294,10 @@ void AEnemyCharacter::CheckIfStuck(FVector CurrentPos, FVector LastPos)
 			bSensedTarget = false;
 			AIController->SetTargetEnemy(nullptr);
 			StuckTimerSet = false;
-			UE_LOG(LogTemp, Error, TEXT("Stuck TIMER REACHED MAX!"));
+			//UE_LOG(LogTemp, Error, TEXT("Stuck TIMER REACHED MAX!"));
 		}
 
-		UE_LOG(LogTemp, Warning, TEXT("Timer: %F"), GetWorld()->TimeSeconds - StuckTimer);
+		//UE_LOG(LogTemp, Warning, TEXT("Timer: %F"), GetWorld()->TimeSeconds - StuckTimer);
 	}
 
 	else

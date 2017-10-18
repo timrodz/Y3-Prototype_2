@@ -103,7 +103,7 @@ bool AEnemyAIController::GetShouldWander()
 
 void AEnemyAIController::SetTargetEnemy(APawn * NewTarget)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Set target enemy called"));
+	//UE_LOG(LogTemp, Warning, TEXT("Set target enemy called"));
 
 	if (BlackboardComp)
 	{
