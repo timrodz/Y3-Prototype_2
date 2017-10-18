@@ -15,22 +15,27 @@ AEnemyAIController::AEnemyAIController(const class FObjectInitializer& ObjectIni
 	BehaviorComp = ObjectInitializer.CreateDefaultSubobject<UBehaviorTreeComponent>(this, TEXT("BehaviorComp"));
 	BlackboardComp = ObjectInitializer.CreateDefaultSubobject<UBlackboardComponent>(this, TEXT("BlackboardComp"));
 
-	/* Match with the AI/ZombieBlackboard */
+	/* Match with the AI Blackboard */
 	CurrentWaypointKeyName = "CurrentWaypoint";
 	EnemyTypeKeyName = "EnemyType";
 	TargetEnemyKeyName = "TargetEnemy";
 	TargetLocationKeyName = "TargetLocation";
+//	ManualLocationKeyName = "ManualLocation";
 
 	DebugWaypoint = nullptr;
+	bEventActive = false;
 
 	/* Initializes PlayerState so we can assign a team index to AI */
 	//bWantsPlayerState = true;
+
+	//OnTestDelegate.AddDynamic(this, &EnemeyAIController::TestFunction);
 }
 
 void AEnemyAIController::Possess(APawn * InPawn)
 {
 	Super::Possess(InPawn);
 
+	// Set up behaviour tree and blackboard
 	AEnemyCharacter* EnemyChar = Cast<AEnemyCharacter>(InPawn);
 	if (EnemyChar)
 	{
@@ -87,6 +92,11 @@ void AEnemyAIController::SetShouldWander(bool ShouldWander)
 	bShouldWander = ShouldWander;
 }
 
+bool AEnemyAIController::IsTargetLocationSet()
+{
+	return bTargetLocationSet;
+}
+
 bool AEnemyAIController::GetShouldWander()
 {
 	return bShouldWander;
@@ -94,6 +104,8 @@ bool AEnemyAIController::GetShouldWander()
 
 void AEnemyAIController::SetTargetEnemy(APawn * NewTarget)
 {
+	//UE_LOG(LogTemp, Warning, TEXT("Set target enemy called"));
+
 	if (BlackboardComp)
 	{
 		BlackboardComp->SetValueAsObject(TargetEnemyKeyName, NewTarget);
@@ -105,6 +117,7 @@ void AEnemyAIController::SetTargetLocation(FVector location)
 	if (BlackboardComp)
 	{
 		BlackboardComp->SetValueAsVector(TargetLocationKeyName, location);
+		bTargetLocationSet = true;
 	}
 }
 
@@ -119,12 +132,41 @@ FVector AEnemyAIController::GetTheTargetLocation()
 	return FVector(0, 0, 0);
 }
 
+//void AEnemyAIController::SetManualLocation(FVector location)
+//{
+//	if (BlackboardComp)
+//	{
+//		BlackboardComp->SetValueAsVector(ManualLocationKeyName, location);
+//	}
+//}
+
+//FVector AEnemyAIController::GetManualLocation()
+//{
+//	if (BlackboardComp)
+//	{
+//		return BlackboardComp->GetValueAsVector(ManualLocationKeyName);
+//	}
+//
+//	UE_LOG(LogTemp, Error, TEXT("No manual location found on blackboard"));
+//	return FVector(0, 0, 0);
+//}
+
 void AEnemyAIController::SetBlackboardEnemyType(EEnemyType NewType)
 {
 	if (BlackboardComp)
 	{
 		BlackboardComp->SetValueAsEnum(EnemyTypeKeyName, (uint8)NewType);
 	}
+}
+
+bool AEnemyAIController::IsEventActive()
+{
+	return bEventActive;
+}
+
+void AEnemyAIController::SetEventActive(bool _b)
+{
+	bEventActive = _b;
 }
 
 void AEnemyAIController::DrawDebugLineToTarget()
@@ -160,7 +202,7 @@ void AEnemyAIController::FindWaypoint()
 
 	if (size != 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Waypoint set"));
+		//UE_LOG(LogTemp, Warning, TEXT("Waypoint set"));
 
 		// Pick random waypoint
 		int rand = FMath::RandRange(0, size - 1);
@@ -169,7 +211,7 @@ void AEnemyAIController::FindWaypoint()
 
 		DebugWaypoint = (Waypoints[rand]);
 
-		// Set current waypoint in BB
+		// Set current waypoint in blackboard
 		SetWaypoint(Waypoints[rand]);
 	}
 	else // No waypoints in map
