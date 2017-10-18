@@ -15,7 +15,7 @@ AEnemyAIController::AEnemyAIController(const class FObjectInitializer& ObjectIni
 	BehaviorComp = ObjectInitializer.CreateDefaultSubobject<UBehaviorTreeComponent>(this, TEXT("BehaviorComp"));
 	BlackboardComp = ObjectInitializer.CreateDefaultSubobject<UBlackboardComponent>(this, TEXT("BlackboardComp"));
 
-	/* Match with the AI/ZombieBlackboard */
+	/* Match with the AI Blackboard */
 	CurrentWaypointKeyName = "CurrentWaypoint";
 	EnemyTypeKeyName = "EnemyType";
 	TargetEnemyKeyName = "TargetEnemy";
@@ -23,7 +23,7 @@ AEnemyAIController::AEnemyAIController(const class FObjectInitializer& ObjectIni
 //	ManualLocationKeyName = "ManualLocation";
 
 	DebugWaypoint = nullptr;
-	bEventActive = true;
+	bEventActive = false;
 
 	/* Initializes PlayerState so we can assign a team index to AI */
 	//bWantsPlayerState = true;
@@ -35,6 +35,7 @@ void AEnemyAIController::Possess(APawn * InPawn)
 {
 	Super::Possess(InPawn);
 
+	// Set up behaviour tree and blackboard
 	AEnemyCharacter* EnemyChar = Cast<AEnemyCharacter>(InPawn);
 	if (EnemyChar)
 	{
@@ -120,7 +121,7 @@ void AEnemyAIController::SetTargetLocation(FVector location)
 	}
 }
 
-FVector AEnemyAIController::GetTargetLocation()
+FVector AEnemyAIController::GetTheTargetLocation()
 {
 	if (BlackboardComp)
 	{
@@ -201,7 +202,7 @@ void AEnemyAIController::FindWaypoint()
 
 	if (size != 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Waypoint set"));
+		//UE_LOG(LogTemp, Warning, TEXT("Waypoint set"));
 
 		// Pick random waypoint
 		int rand = FMath::RandRange(0, size - 1);
@@ -210,7 +211,7 @@ void AEnemyAIController::FindWaypoint()
 
 		DebugWaypoint = (Waypoints[rand]);
 
-		// Set current waypoint in BB
+		// Set current waypoint in blackboard
 		SetWaypoint(Waypoints[rand]);
 	}
 	else // No waypoints in map

@@ -26,21 +26,18 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 
 	/* Called whenever the controller possesses a character bot */
 	virtual void Possess(class APawn* InPawn) override;
-
 	virtual void UnPossess() override;
 
 	bool bShouldWander;
-
 	bool bEventActive;
-
 	bool bTargetLocationSet;
 
 	std::vector <AEnemyWaypoint*> Waypoints;
-
 	AEnemyWaypoint* DebugWaypoint;
+	
 
+	// Blackboard and Behaviour tree
 	UBehaviorTreeComponent* BehaviorComp;
-
 	UBlackboardComponent* BlackboardComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
@@ -65,10 +62,16 @@ public:
 //	UPROPERTY(BlueprintAssignable, Category = "Test")
 //		FTestDelegate OnTestDelegate;
 
-	UBTTaskNode* SetNextWaypoint;
+	UFUNCTION(BlueprintCallable, Category = "AI")
+		void FindWaypoint();
 
 	AEnemyWaypoint* GetWaypoint();
+	UBTTaskNode* SetNextWaypoint;
 
+	bool IsTargetLocationSet();
+	void SetTargetLocation(FVector location);
+	FVector GetTheTargetLocation();
+	
 	AFirstPersonCharacterController* GetTargetEnemy();
 	void SetTargetEnemy(APawn* NewTarget);
 
@@ -76,13 +79,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	bool GetShouldWander();
-
 	void SetShouldWander(bool ShouldWander);
-
-	bool IsTargetLocationSet();
-
-	void SetTargetLocation(FVector location);
-	FVector GetTargetLocation();
 
 	//void SetManualLocation(FVector location);
 	//FVector GetManualLocation();
@@ -91,16 +88,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	bool IsEventActive();
-
 	void SetEventActive(bool _b);
 
 	void DrawDebugLineToTarget();
 
-	UFUNCTION(BlueprintCallable, Category = "AI")
-	void FindWaypoint();
-
 	/** Returns BehaviorComp subobject **/
 	FORCEINLINE UBehaviorTreeComponent* GetBehaviorComp() const { return BehaviorComp; }
-
 	FORCEINLINE UBlackboardComponent* GetBlackboardComp() const { return BlackboardComp; }
 };
