@@ -171,10 +171,6 @@ void AEnemyCharacter::OnHearNoise(APawn * PawnInstigator, const FVector & Locati
 
 	//UE_LOG(LogTemp, Warning, TEXT("HEARD Noise"));
 
-	float DistanceToNoise = FVector::Dist(this->GetActorLocation(), PawnInstigator->GetActorLocation());
-
-	UE_LOG(LogTemp, Warning, TEXT("Distance to noise: %f"), DistanceToNoise);
-
 	bSensedTarget = true;
 	LastHeardTime = GetWorld()->GetTimeSeconds();
 
