@@ -13,6 +13,10 @@
 #include <vector>
 #include "EnemyAIController.generated.h"
 
+// Delegates
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTestDelegate);
+//DECLARE_DELEGATE(FTestDelegate);
+
 UCLASS()
 class ESCAPEGAME_API AEnemyAIController : public AAIController
 {
@@ -26,6 +30,10 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 	virtual void UnPossess() override;
 
 	bool bShouldWander;
+
+	bool bEventActive;
+
+	bool bTargetLocationSet;
 
 	std::vector <AEnemyWaypoint*> Waypoints;
 
@@ -46,29 +54,45 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		FName EnemyTypeKeyName;
+
+//	UPROPERTY(EditDefaultsOnly, Category = "AI")
+//		FName ManualLocationKeyName;
 	
 public:
+
+	//void TestFunction();
+
+//	UPROPERTY(BlueprintAssignable, Category = "Test")
+//		FTestDelegate OnTestDelegate;
 
 	UBTTaskNode* SetNextWaypoint;
 
 	AEnemyWaypoint* GetWaypoint();
 
 	AFirstPersonCharacterController* GetTargetEnemy();
+	void SetTargetEnemy(APawn* NewTarget);
 
 	void SetWaypoint(AEnemyWaypoint* NewWaypoint);
-
-	void SetShouldWander(bool ShouldWander);
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	bool GetShouldWander();
 
-	void SetTargetEnemy(APawn* NewTarget);
+	void SetShouldWander(bool ShouldWander);
+
+	bool IsTargetLocationSet();
 
 	void SetTargetLocation(FVector location);
+	FVector GetTargetLocation();
 
-	FVector GetTheTargetLocation();
+	//void SetManualLocation(FVector location);
+	//FVector GetManualLocation();
 
 	void SetBlackboardEnemyType(EEnemyType NewType);
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	bool IsEventActive();
+
+	void SetEventActive(bool _b);
 
 	void DrawDebugLineToTarget();
 

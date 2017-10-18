@@ -43,6 +43,15 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 
 	bool bSensedTarget;
 
+	FVector LastLocation;
+
+	float StuckTimer;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	float StuckThreshold;
+
+	bool StuckTimerSet;
+
 	class AEnemyAIController* AIController;
 
 	/* Time-out value to clear the sensed position of the player. Should be higher than Sense interval in the PawnSense component not never miss sense ticks. */
@@ -68,7 +77,7 @@ protected:
 		void OnSeePlayer(APawn* Pawn);
 
 	UFUNCTION(BlueprintCallable)
-		void OnHearNoise(APawn* PawnInstigator, const FVector& Location, float Volume);
+		void OnHearPlayer(APawn* PawnInstigator, const FVector& Location, float Volume);
 
 	UFUNCTION()
 		void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
@@ -93,7 +102,12 @@ public:
 
 	void SetPatrolPoints(bool b);
 
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+		float TargetDistanceThreshold;
+
 	bool IsCloseToTargetLocation();
+
+	void CheckIfStuck(FVector CurrentPos, FVector LastPos);
 };
 
 
