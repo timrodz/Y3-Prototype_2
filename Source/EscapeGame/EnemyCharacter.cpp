@@ -83,7 +83,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	//UE_LOG(LogTemp, Warning, TEXT("Time since seen: %f   Time since heard: %f"), GetWorld()->TimeSeconds - LastSeenTime, GetWorld()->TimeSeconds - LastHeardTime);
 	//UE_LOG(LogTemp, Warning, TEXT("Target Location: %s"), *AIController->GetTargetLocation().ToString());
 
-	AIController->SetTargetLocation(FVector(-1340.0f, -1290.0f, 30.0f));
+	//AIController->SetTargetLocation(FVector(-1340.0f, -1290.0f, 30.0f));
 
 	bIsCloseToTargetLocation = IsCloseToTargetLocation();
 
