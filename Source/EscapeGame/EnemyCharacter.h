@@ -22,6 +22,7 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere, Category = "AI")
 	class AEnemyAIController* AIController;
 
 	/* Last time the player was spotted */

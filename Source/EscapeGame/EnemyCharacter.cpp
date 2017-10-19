@@ -92,15 +92,18 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	AIController = Cast<AEnemyAIController>(GetController());
 	if (AIController->IsEventActive() && AIController->IsTargetLocationSet())
 	{
-		UE_LOG(LogTemp, Error, TEXT("Event Active"));
+		UE_LOG(LogTemp, Warning, TEXT("Event Active"));
 
 		// Event sets target location in blackboard
 
 		//UE_LOG(LogTemp, Warning, TEXT("Target Location: %s"), *AIController->GetTargetLocation().ToString());
 
+		DebugTextRender->SetText(FText::FromString("Event"));
+
 		if (bIsCloseToTargetLocation)
 		{
-			AIController->SetEventActive(false);
+			UE_LOG(LogTemp, Warning, TEXT("At Event Target")); 
+			//AIController->SetEventActive(false);
 		}
 
 		return;	
@@ -182,12 +185,17 @@ void AEnemyCharacter::OnSeePlayer(APawn * Pawn)
 	//}
 
 	//UE_LOG(LogTemp, Warning, TEXT("Player SEEN"));
+	AIController = Cast<AEnemyAIController>(GetController());
+
+	if (AIController->IsEventActive())
+	{
+		return;
+	}
 
 	/* Keep track of the time the player was last sensed in order to clear the target */
 	LastSeenTime = GetWorld()->GetTimeSeconds();
 	bSensedTarget = true;
 
-	AIController = Cast<AEnemyAIController>(GetController());
 	AFirstPersonCharacterController* SensedPawn = Cast<AFirstPersonCharacterController>(Pawn);
 
 	if (AIController)// && SensedPawn->IsAlive())
@@ -195,6 +203,7 @@ void AEnemyCharacter::OnSeePlayer(APawn * Pawn)
 		AIController->SetTargetEnemy(SensedPawn);
 		AIController->SetTargetLocation(SensedPawn->GetActorLocation());
 		DebugTextRender->SetText(FText::FromString("Chasing-Seen"));
+		if (DebugAIText) { UE_LOG(LogTemp, Error, TEXT("Set target location - seen")); }
 	}
 }
 
@@ -210,15 +219,22 @@ void AEnemyCharacter::OnHearPlayer(APawn * PawnInstigator, const FVector & Locat
 	//	BroadcastUpdateAudioLoop(true);
 	//}
 
+	AIController = Cast<AEnemyAIController>(GetController());
+
+	if (AIController->IsEventActive())
+	{
+		return;
+	}
+	
 	if (DebugAIText) { UE_LOG(LogTemp, Warning, TEXT("HEARD Noise")); }
 
 	float DistanceToNoise = FVector::Dist(this->GetActorLocation(), PawnInstigator->GetActorLocation());
-	UE_LOG(LogTemp, Warning, TEXT("Distance to noise: %f"), DistanceToNoise);
+	//UE_LOG(LogTemp, Warning, TEXT("Distance to noise: %f"), DistanceToNoise);
 
 	bSensedTarget = true;
 	LastHeardTime = GetWorld()->GetTimeSeconds();
 
-	AIController = Cast<AEnemyAIController>(GetController());
+	
 
 	//UE_LOG(LogTemp, Warning, TEXT("Sensed target set to true"));
 
@@ -227,6 +243,7 @@ void AEnemyCharacter::OnHearPlayer(APawn * PawnInstigator, const FVector & Locat
 		AIController->SetTargetEnemy(PawnInstigator);
 		AIController->SetTargetLocation(PawnInstigator->GetActorLocation());
 		//AIController->SetTargetLocation(PawnInstigator->GetActorLocation()); //  change to some kind of delay??? Watch vids etc
+		if (DebugAIText) { UE_LOG(LogTemp, Error, TEXT("Set target location - heard")); }
 		DebugTextRender->SetText(FText::FromString("Chasing-Heard"));
 	}
 

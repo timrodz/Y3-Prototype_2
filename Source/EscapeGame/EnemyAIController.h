@@ -29,7 +29,10 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 	virtual void UnPossess() override;
 
 	bool bShouldWander;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
 	bool bEventActive;
+
 	bool bTargetLocationSet;
 
 	std::vector <AEnemyWaypoint*> Waypoints;
@@ -69,7 +72,10 @@ public:
 	UBTTaskNode* SetNextWaypoint;
 
 	bool IsTargetLocationSet();
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
 	void SetTargetLocation(FVector location);
+	UFUNCTION(BlueprintCallable, Category = "AI")
 	FVector GetTheTargetLocation();
 	
 	AFirstPersonCharacterController* GetTargetEnemy();
@@ -88,6 +94,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	bool IsEventActive();
+	UFUNCTION(BlueprintCallable, Category = "AI")
 	void SetEventActive(bool _b);
 
 	void DrawDebugLineToTarget();
