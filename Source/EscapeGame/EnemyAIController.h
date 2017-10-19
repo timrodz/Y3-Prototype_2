@@ -26,19 +26,18 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 
 	/* Called whenever the controller possesses a character bot */
 	virtual void Possess(class APawn* InPawn) override;
-
 	virtual void UnPossess() override;
 
 	bool bShouldWander;
-
 	bool bEventActive;
+	bool bTargetLocationSet;
 
 	std::vector <AEnemyWaypoint*> Waypoints;
-
 	AEnemyWaypoint* DebugWaypoint;
+	
 
+	// Blackboard and Behaviour tree
 	UBehaviorTreeComponent* BehaviorComp;
-
 	UBlackboardComponent* BlackboardComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
@@ -53,17 +52,23 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		FName EnemyTypeKeyName;
 
-	UPROPERTY(EditDefaultsOnly, Category = "AI")
-		FName ManualLocationKeyName;
+//	UPROPERTY(EditDefaultsOnly, Category = "AI")
+//		FName ManualLocationKeyName;
 	
 public:
 	UFUNCTION()
 	void OnHearNoise(FVector location);
 
-	UBTTaskNode* SetNextWaypoint;
+	UFUNCTION(BlueprintCallable, Category = "AI")
+		void FindWaypoint();
 
 	AEnemyWaypoint* GetWaypoint();
+	UBTTaskNode* SetNextWaypoint;
 
+	bool IsTargetLocationSet();
+	void SetTargetLocation(FVector location);
+	FVector GetTheTargetLocation();
+	
 	AFirstPersonCharacterController* GetTargetEnemy();
 	void SetTargetEnemy(APawn* NewTarget);
 
@@ -71,27 +76,20 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	bool GetShouldWander();
-
 	void SetShouldWander(bool ShouldWander);
 
-	void SetTargetLocation(FVector location);
-	FVector GetTheTargetLocation();
-
-	void SetManualLocation(FVector location);
-	FVector GetManualLocation();
+	//void SetManualLocation(FVector location);
+	//FVector GetManualLocation();
 
 	void SetBlackboardEnemyType(EEnemyType NewType);
 
+	UFUNCTION(BlueprintCallable, Category = "AI")
 	bool IsEventActive();
 	void SetEventActive(bool _b);
 
 	void DrawDebugLineToTarget();
 
-	UFUNCTION(BlueprintCallable, Category = "AI")
-	void FindWaypoint();
-
 	/** Returns BehaviorComp subobject **/
 	FORCEINLINE UBehaviorTreeComponent* GetBehaviorComp() const { return BehaviorComp; }
-
 	FORCEINLINE UBlackboardComponent* GetBlackboardComp() const { return BlackboardComp; }
 };

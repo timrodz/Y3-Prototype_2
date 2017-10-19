@@ -22,6 +22,8 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	class AEnemyAIController* AIController;
+
 	/* Last time the player was spotted */
 	float LastSeenTime;
 
@@ -36,23 +38,18 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 	/* Resets after sense time-out to avoid unnecessary clearing of target each tick */
 	
 	bool bPatrolPointsSet;
-
 	bool bIsCloseToTargetLocation;
-
 	bool bTargetTimerSet;
-
 	bool bSensedTarget;
-
 	FVector LastLocation;
-
 	float StuckTimer;
+	bool StuckTimerSet;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+		bool DebugAIText;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	float StuckThreshold;
-
-	bool StuckTimerSet;
-
-	class AEnemyAIController* AIController;
 
 	/* Time-out value to clear the sensed position of the player. Should be higher than Sense interval in the PawnSense component not never miss sense ticks. */
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
