@@ -116,6 +116,7 @@ void AEnemyAIController::SetTargetLocation(FVector location)
 {
 	if (BlackboardComp)
 	{
+		UE_LOG(LogTemp, Error, TEXT("Setting target location"));
 		BlackboardComp->SetValueAsVector(TargetLocationKeyName, location);
 		bTargetLocationSet = true;
 	}
