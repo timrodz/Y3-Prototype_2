@@ -65,6 +65,8 @@ void AEnemyCharacter::BeginPlay()
 	}
 
 	this->OnActorHit.AddDynamic(this, &AEnemyCharacter::OnHit);
+	this->OnCollisionHit.AddDynamic(this, &AEnemyCharacter::OnCreateNoise);
+	//this->OnCollisionHit.AddDynamic(this, &AInteractableObject::OnCreateNoise);
 
 	DebugTextRender = this->FindComponentByClass<UTextRenderComponent>();
 	AIController = Cast<AEnemyAIController>(GetController());
@@ -311,6 +313,11 @@ void AEnemyCharacter::CheckIfStuck(FVector CurrentPos, FVector LastPos)
 	{
 		StuckTimerSet = false;
 	}
+}
+
+void AEnemyCharacter::OnCreateNoise(FVector location)
+{
+	UE_LOG(LogTemp, Log, TEXT("Enemy (%s)::OnCreateNoise: %s"), *this->GetName(), *location.ToString());
 }
 
 

@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "InteractableObject.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Components/TextRenderComponent.h"
@@ -105,6 +107,12 @@ public:
 	bool IsCloseToTargetLocation();
 
 	void CheckIfStuck(FVector CurrentPos, FVector LastPos);
+
+	UFUNCTION()
+		void OnCreateNoise(FVector location);
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+		FOnCollisionHit OnCollisionHit;
 };
 
 

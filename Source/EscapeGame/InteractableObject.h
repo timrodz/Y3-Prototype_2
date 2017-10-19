@@ -31,6 +31,9 @@ public:
 	UFUNCTION()
 	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& hit);
 
+	UFUNCTION()
+		void OnCreateNoise(FVector location);
+
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 		FOnCollisionHit OnCollisionHit;
 

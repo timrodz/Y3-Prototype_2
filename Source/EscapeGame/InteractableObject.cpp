@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "InteractableObject.h"
-
+#include "EnemyAIController.h"
 
 // Sets default values
 AInteractableObject::AInteractableObject()
@@ -16,7 +16,8 @@ void AInteractableObject::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	this->OnActorHit.AddDynamic(this, &AInteractableObject::OnHit)
+	this->OnActorHit.AddDynamic(this, &AInteractableObject::OnHit);
+	this->OnCollisionHit.AddDynamic(this, &AInteractableObject::OnCreateNoise);
 }
 
 // Called every frame
@@ -35,8 +36,12 @@ void AInteractableObject::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 void AInteractableObject::OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& hit)
 {
-	UE_LOG(LogTemp, Log, TEXT("%s :: OnHit"), *SelfActor->GetName());
+	//UE_LOG(LogTemp, Log, TEXT("%s :: OnHit"), *SelfActor->GetName());
 
 	OnCollisionHit.Broadcast(OtherActor->GetActorLocation());
 }
 
+void AInteractableObject::OnCreateNoise(FVector location)
+{
+	UE_LOG(LogTemp, Log, TEXT("Interactable (%s)::OnCreateNoise: %s"), *this->GetName(), *location.ToString());
+}

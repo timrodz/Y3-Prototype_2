@@ -27,7 +27,7 @@ AEnemyAIController::AEnemyAIController(const class FObjectInitializer& ObjectIni
 
 	/* Initializes PlayerState so we can assign a team index to AI */
 	//bWantsPlayerState = true;
-	
+	this->OnCollisionHit.AddDynamic(this, &AEnemyAIController::OnHearNoise);
 }
 
 void AEnemyAIController::Possess(APawn * InPawn)
@@ -192,7 +192,7 @@ void AEnemyAIController::FindWaypoint()
 		AEnemyWaypoint *WP = *ActorItr;
 		// Push to waypoints vector
 		Waypoints.push_back(WP);
-
+	
 		//ClientMessage(ActorItr->GetName());
 		//ClientMessage(ActorItr->GetActorLocation().ToString());
 	}
@@ -226,5 +226,6 @@ void AEnemyAIController::FindWaypoint()
 
 void AEnemyAIController::OnHearNoise(FVector location)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, "HEAR NOISE");
+	UE_LOG(LogTemp, Warning, TEXT("AI CONTROLLER - OnHearNoise"));
+	//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, "HEAR NOISE");
 }
