@@ -55,8 +55,8 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		FName EnemyTypeKeyName;
 
-//	UPROPERTY(EditDefaultsOnly, Category = "AI")
-//		FName ManualLocationKeyName;
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+		FName EventLocationKeyName;
 	
 public:
 
@@ -87,8 +87,10 @@ public:
 	bool GetShouldWander();
 	void SetShouldWander(bool ShouldWander);
 
-	//void SetManualLocation(FVector location);
-	//FVector GetManualLocation();
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	void SetEventLocation(FVector location);
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	FVector GetEventLocation();
 
 	void SetBlackboardEnemyType(EEnemyType NewType);
 

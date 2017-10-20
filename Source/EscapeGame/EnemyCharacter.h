@@ -103,7 +103,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		float TargetDistanceThreshold;
 
-	bool IsCloseToTargetLocation();
+	bool IsCloseToLocation(FVector _location);
 
 	void CheckIfStuck(FVector CurrentPos, FVector LastPos);
 };

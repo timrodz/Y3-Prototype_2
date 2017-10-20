@@ -20,7 +20,7 @@ AEnemyAIController::AEnemyAIController(const class FObjectInitializer& ObjectIni
 	EnemyTypeKeyName = "EnemyType";
 	TargetEnemyKeyName = "TargetEnemy";
 	TargetLocationKeyName = "TargetLocation";
-//	ManualLocationKeyName = "ManualLocation";
+	EventLocationKeyName = "EventLocation";
 
 	DebugWaypoint = nullptr;
 	bEventActive = false;
@@ -133,24 +133,24 @@ FVector AEnemyAIController::GetTheTargetLocation()
 	return FVector(0, 0, 0);
 }
 
-//void AEnemyAIController::SetManualLocation(FVector location)
-//{
-//	if (BlackboardComp)
-//	{
-//		BlackboardComp->SetValueAsVector(ManualLocationKeyName, location);
-//	}
-//}
+void AEnemyAIController::SetEventLocation(FVector location)
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsVector(EventLocationKeyName, location);
+	}
+}
 
-//FVector AEnemyAIController::GetManualLocation()
-//{
-//	if (BlackboardComp)
-//	{
-//		return BlackboardComp->GetValueAsVector(ManualLocationKeyName);
-//	}
-//
-//	UE_LOG(LogTemp, Error, TEXT("No manual location found on blackboard"));
-//	return FVector(0, 0, 0);
-//}
+FVector AEnemyAIController::GetEventLocation()
+{
+	if (BlackboardComp)
+	{
+		return BlackboardComp->GetValueAsVector(EventLocationKeyName);
+	}
+
+	UE_LOG(LogTemp, Error, TEXT("No event location found on blackboard"));
+	return FVector(0, 0, 0);
+}
 
 void AEnemyAIController::SetBlackboardEnemyType(EEnemyType NewType)
 {

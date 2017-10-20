@@ -70,6 +70,7 @@ void AEnemyCharacter::BeginPlay()
 	AIController = Cast<AEnemyAIController>(GetController());
 	AIController->SetShouldWander(true);
 	AIController->SetWaypoint(nullptr);
+	//AIController->SetEventLocation(FVector(-1140, -1960, 80));
 	//AIController->SetTargetLocation(FVector(0));
 }
 
@@ -85,29 +86,31 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	//UE_LOG(LogTemp, Warning, TEXT("Target Location: %s"), *AIController->GetTargetLocation().ToString());
 
 	//AIController->SetTargetLocation(FVector(-1340.0f, -1290.0f, 30.0f));
-
-	bIsCloseToTargetLocation = IsCloseToTargetLocation();
-
-	// Check for events
 	AIController = Cast<AEnemyAIController>(GetController());
+	
+	// Check for events
 	if (AIController->IsEventActive() && AIController->IsTargetLocationSet())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Event Active"));
+		//UE_LOG(LogTemp, Warning, TEXT("Event Active"));
 
 		// Event sets target location in blackboard
 
 		//UE_LOG(LogTemp, Warning, TEXT("Target Location: %s"), *AIController->GetTargetLocation().ToString());
 
 		DebugTextRender->SetText(FText::FromString("Event"));
+		UE_LOG(LogTemp, Warning, TEXT("My Loc: %s   Event Loc: %s"), *this->GetActorLocation().ToString(), *AIController->GetEventLocation().ToString());
 
-		if (bIsCloseToTargetLocation)
+		if (IsCloseToLocation(AIController->GetEventLocation()))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("At Event Target")); 
-			//AIController->SetEventActive(false);
+		    UE_LOG(LogTemp, Warning, TEXT("At Event Target")); 
+			//AIController->SetEventActive(false);			
 		}
 
 		return;	
 	}
+
+	FVector TargetLoc = AIController->GetTheTargetLocation();
+	bIsCloseToTargetLocation = IsCloseToLocation(TargetLoc);
 
 	// Check if enemy has seen or heard anything
 	if (bSensedTarget)
@@ -225,7 +228,7 @@ void AEnemyCharacter::OnHearPlayer(APawn * PawnInstigator, const FVector & Locat
 	{
 		return;
 	}
-	
+
 	if (DebugAIText) { UE_LOG(LogTemp, Warning, TEXT("HEARD Noise")); }
 
 	float DistanceToNoise = FVector::Dist(this->GetActorLocation(), PawnInstigator->GetActorLocation());
@@ -280,22 +283,21 @@ void AEnemyCharacter::SetPatrolPoints(bool b)
 	bPatrolPointsSet = b;
 }
 
-bool AEnemyCharacter::IsCloseToTargetLocation()
+bool AEnemyCharacter::IsCloseToLocation(FVector _location)
 {
 	// Check if enemy is close the target - as sometimes they can't reach the exact location
 
 	AIController = Cast<AEnemyAIController>(GetController());
-	FVector TargetLoc = AIController->GetTheTargetLocation();
 	FVector Loc = this->GetActorLocation();
 
-	if (Loc.X - TargetLoc.X < TargetDistanceThreshold && Loc.Y - TargetLoc.Y < TargetDistanceThreshold)
+	if (Loc.X - _location.X < TargetDistanceThreshold && Loc.Y - _location.Y < TargetDistanceThreshold)
 	{
 		//UE_LOG(LogTemp, Error, TEXT("At Target Location")); 
-		bIsCloseToTargetLocation = true;
+		//bIsCloseToTargetLocation = true;
 		return true;
 	}
 
-	bIsCloseToTargetLocation = false;
+	//bIsCloseToTargetLocation = false;
 	//UE_LOG(LogTemp, Error, TEXT("NOT At Target Location!   Target = %f,%f    Me = %f,%f"), TargetLoc.X, TargetLoc.Y, Loc.X, Loc.Y);
 	return false;
 }
