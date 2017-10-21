@@ -41,8 +41,8 @@ AEnemyCharacter::AEnemyCharacter(const class FObjectInitializer& ObjectInitializ
 	TimeToWaitAtTargetLocation = 3.0f;
 	TargetDistanceThreshold = 60.0f;
 	StuckTimer = 0.0f;
-	StuckTimerSet = false;
-	StuckThreshold = 15.0f;
+//	StuckTimerSet = false;
+	StuckThreshold = 10.0f;
 	DebugAIText = false;
 }
 
@@ -70,6 +70,8 @@ void AEnemyCharacter::BeginPlay()
 	AIController = Cast<AEnemyAIController>(GetController());
 	AIController->SetShouldWander(true);
 	AIController->SetWaypoint(nullptr);
+	LastLocation = this->GetActorLocation();
+	StuckTimer = GetWorld()->TimeSeconds;
 	//AIController->SetEventLocation(FVector(-1140, -1960, 80));
 	//AIController->SetTargetLocation(FVector(0));
 }
@@ -80,6 +82,11 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	//UE_LOG(LogTemp, Warning, TEXT("Start of Tick: %s"), *this->GetActorLocation().ToString());
 
 	Super::Tick(DeltaTime);
+
+	if (GetWorld()->TimeSeconds - StuckTimer > StuckThreshold)
+	{
+		CheckIfStuck();
+	}
 
 	//UE_LOG(LogTemp, Warning, TEXT("New: %s    Old: %s"), *this->GetActorLocation().ToString(), *LastLocation.ToString());
 	//UE_LOG(LogTemp, Warning, TEXT("Time since seen: %f   Time since heard: %f"), GetWorld()->TimeSeconds - LastSeenTime, GetWorld()->TimeSeconds - LastHeardTime);
@@ -116,7 +123,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	if (bSensedTarget)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("SENSED TARGET"));
-		CheckIfStuck(this->GetActorLocation(), LastLocation);
+		//CheckIfStuck(this->GetActorLocation(), LastLocation);
 
 		if (bIsCloseToTargetLocation && !bTargetTimerSet)
 		{
@@ -302,34 +309,31 @@ bool AEnemyCharacter::IsCloseToLocation(FVector _location)
 	return false;
 }
 
-void AEnemyCharacter::CheckIfStuck(FVector CurrentPos, FVector LastPos)
+void AEnemyCharacter::CheckIfStuck()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("New: %s    Old: %s"), *this->GetActorLocation().ToString(), *LastLocation.ToString());
+	AIController = Cast<AEnemyAIController>(GetController());
 
-	if (CurrentPos == LastPos)
+	StuckTimer = GetWorld()->TimeSeconds;
+
+	if (this->GetActorLocation() == LastLocation)
 	{
-		if (!StuckTimerSet)
-		{
-			StuckTimer = GetWorld()->TimeSeconds;
-			StuckTimerSet = true;
-			//UE_LOG(LogTemp, Warning, TEXT("Stuck timer set"));
-		}
+		bSensedTarget = false;
+		AIController->SetTargetEnemy(nullptr);
+		if (DebugAIText) { UE_LOG(LogTemp, Error, TEXT("STUCK!!!")); }
 
-		if (GetWorld()->TimeSeconds - StuckTimer > StuckThreshold && StuckTimerSet)
+		if (!AIController->IsEventActive())
 		{
-			bSensedTarget = false;
-			AIController->SetTargetEnemy(nullptr);
-			StuckTimerSet = false;
-			if (DebugAIText) { UE_LOG(LogTemp, Error, TEXT("Stuck TIMER REACHED MAX!")); }
+			AIController->SetWaypoint(nullptr);
+			//AIController->FindWaypoint();
 		}
-
-		//UE_LOG(LogTemp, Warning, TEXT("Timer: %F"), GetWorld()->TimeSeconds - StuckTimer);
+		else // Event
+		{
+			AIController->SetEventActive(false);
+		}
 	}
 
-	else
-	{
-		StuckTimerSet = false;
-	}
+	LastLocation = this->GetActorLocation();
 }
 
 

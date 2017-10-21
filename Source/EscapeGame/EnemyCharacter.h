@@ -44,7 +44,7 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 	bool bSensedTarget;
 	FVector LastLocation;
 	float StuckTimer;
-	bool StuckTimerSet;
+//	bool StuckTimerSet;
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 		bool DebugAIText;
@@ -105,7 +105,7 @@ public:
 
 	bool IsCloseToLocation(FVector _location);
 
-	void CheckIfStuck(FVector CurrentPos, FVector LastPos);
+	void CheckIfStuck();
 };
 
 
