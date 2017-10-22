@@ -98,6 +98,9 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	// Check for events
 	if (AIController->IsEventActive() && AIController->IsTargetLocationSet())
 	{
+
+		// SET MOVMENT SPEED - HOW TO ACCESS CHARACTER MOVEMENT COMPONENT???????????????
+
 		//UE_LOG(LogTemp, Warning, TEXT("Event Active"));
 
 		// Event sets target location in blackboard
