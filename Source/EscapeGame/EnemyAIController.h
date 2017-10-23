@@ -29,7 +29,10 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 	virtual void UnPossess() override;
 
 	bool bShouldWander;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
 	bool bEventActive;
+
 	bool bTargetLocationSet;
 
 	std::vector <AEnemyWaypoint*> Waypoints;
@@ -52,8 +55,8 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		FName EnemyTypeKeyName;
 
-//	UPROPERTY(EditDefaultsOnly, Category = "AI")
-//		FName ManualLocationKeyName;
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+		FName EventLocationKeyName;
 	
 public:
 	UFUNCTION()
@@ -69,7 +72,10 @@ public:
 	UBTTaskNode* SetNextWaypoint;
 
 	bool IsTargetLocationSet();
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
 	void SetTargetLocation(FVector location);
+	UFUNCTION(BlueprintCallable, Category = "AI")
 	FVector GetTheTargetLocation();
 	
 	AFirstPersonCharacterController* GetTargetEnemy();
@@ -81,13 +87,16 @@ public:
 	bool GetShouldWander();
 	void SetShouldWander(bool ShouldWander);
 
-	//void SetManualLocation(FVector location);
-	//FVector GetManualLocation();
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	void SetEventLocation(FVector location);
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	FVector GetEventLocation();
 
 	void SetBlackboardEnemyType(EEnemyType NewType);
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	bool IsEventActive();
+	UFUNCTION(BlueprintCallable, Category = "AI")
 	void SetEventActive(bool _b);
 
 	void DrawDebugLineToTarget();

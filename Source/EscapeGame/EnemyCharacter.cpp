@@ -41,8 +41,8 @@ AEnemyCharacter::AEnemyCharacter(const class FObjectInitializer& ObjectInitializ
 	TimeToWaitAtTargetLocation = 3.0f;
 	TargetDistanceThreshold = 60.0f;
 	StuckTimer = 0.0f;
-	StuckTimerSet = false;
-	StuckThreshold = 15.0f;
+//	StuckTimerSet = false;
+	StuckThreshold = 10.0f;
 	DebugAIText = false;
 }
 
@@ -72,6 +72,9 @@ void AEnemyCharacter::BeginPlay()
 	AIController = Cast<AEnemyAIController>(GetController());
 	AIController->SetShouldWander(true);
 	AIController->SetWaypoint(nullptr);
+	LastLocation = this->GetActorLocation();
+	StuckTimer = GetWorld()->TimeSeconds;
+	//AIController->SetEventLocation(FVector(-1140, -1960, 80));
 	//AIController->SetTargetLocation(FVector(0));
 }
 
@@ -82,37 +85,50 @@ void AEnemyCharacter::Tick(float DeltaTime)
 
 	Super::Tick(DeltaTime);
 
+	if (GetWorld()->TimeSeconds - StuckTimer > StuckThreshold)
+	{
+		CheckIfStuck();
+	}
+
 	//UE_LOG(LogTemp, Warning, TEXT("New: %s    Old: %s"), *this->GetActorLocation().ToString(), *LastLocation.ToString());
 	//UE_LOG(LogTemp, Warning, TEXT("Time since seen: %f   Time since heard: %f"), GetWorld()->TimeSeconds - LastSeenTime, GetWorld()->TimeSeconds - LastHeardTime);
 	//UE_LOG(LogTemp, Warning, TEXT("Target Location: %s"), *AIController->GetTargetLocation().ToString());
 
 	//AIController->SetTargetLocation(FVector(-1340.0f, -1290.0f, 30.0f));
-
-	bIsCloseToTargetLocation = IsCloseToTargetLocation();
-
-	// Check for events
 	AIController = Cast<AEnemyAIController>(GetController());
+	
+	// Check for events
 	if (AIController->IsEventActive() && AIController->IsTargetLocationSet())
 	{
-		UE_LOG(LogTemp, Error, TEXT("Event Active"));
+
+		// SET MOVMENT SPEED - HOW TO ACCESS CHARACTER MOVEMENT COMPONENT???????????????
+
+		//UE_LOG(LogTemp, Warning, TEXT("Event Active"));
 
 		// Event sets target location in blackboard
 
 		//UE_LOG(LogTemp, Warning, TEXT("Target Location: %s"), *AIController->GetTargetLocation().ToString());
 
-		if (bIsCloseToTargetLocation)
+		DebugTextRender->SetText(FText::FromString("Event"));
+		UE_LOG(LogTemp, Warning, TEXT("My Loc: %s   Event Loc: %s"), *this->GetActorLocation().ToString(), *AIController->GetEventLocation().ToString());
+
+		if (IsCloseToLocation(AIController->GetEventLocation()))
 		{
-			AIController->SetEventActive(false);
+		    UE_LOG(LogTemp, Warning, TEXT("At Event Target")); 
+			//AIController->SetEventActive(false);			
 		}
 
 		return;	
 	}
 
+	FVector TargetLoc = AIController->GetTheTargetLocation();
+	bIsCloseToTargetLocation = IsCloseToLocation(TargetLoc);
+
 	// Check if enemy has seen or heard anything
 	if (bSensedTarget)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("SENSED TARGET"));
-		CheckIfStuck(this->GetActorLocation(), LastLocation);
+		//CheckIfStuck(this->GetActorLocation(), LastLocation);
 
 		if (bIsCloseToTargetLocation && !bTargetTimerSet)
 		{
@@ -184,12 +200,17 @@ void AEnemyCharacter::OnSeePlayer(APawn * Pawn)
 	//}
 
 	//UE_LOG(LogTemp, Warning, TEXT("Player SEEN"));
+	AIController = Cast<AEnemyAIController>(GetController());
+
+	if (AIController->IsEventActive())
+	{
+		return;
+	}
 
 	/* Keep track of the time the player was last sensed in order to clear the target */
 	LastSeenTime = GetWorld()->GetTimeSeconds();
 	bSensedTarget = true;
 
-	AIController = Cast<AEnemyAIController>(GetController());
 	AFirstPersonCharacterController* SensedPawn = Cast<AFirstPersonCharacterController>(Pawn);
 
 	if (AIController)// && SensedPawn->IsAlive())
@@ -197,6 +218,7 @@ void AEnemyCharacter::OnSeePlayer(APawn * Pawn)
 		AIController->SetTargetEnemy(SensedPawn);
 		AIController->SetTargetLocation(SensedPawn->GetActorLocation());
 		DebugTextRender->SetText(FText::FromString("Chasing-Seen"));
+		if (DebugAIText) { UE_LOG(LogTemp, Error, TEXT("Set target location - seen")); }
 	}
 }
 
@@ -212,15 +234,22 @@ void AEnemyCharacter::OnHearPlayer(APawn * PawnInstigator, const FVector & Locat
 	//	BroadcastUpdateAudioLoop(true);
 	//}
 
+	AIController = Cast<AEnemyAIController>(GetController());
+
+	if (AIController->IsEventActive())
+	{
+		return;
+	}
+
 	if (DebugAIText) { UE_LOG(LogTemp, Warning, TEXT("HEARD Noise")); }
 
 	float DistanceToNoise = FVector::Dist(this->GetActorLocation(), PawnInstigator->GetActorLocation());
-	UE_LOG(LogTemp, Warning, TEXT("Distance to noise: %f"), DistanceToNoise);
+	//UE_LOG(LogTemp, Warning, TEXT("Distance to noise: %f"), DistanceToNoise);
 
 	bSensedTarget = true;
 	LastHeardTime = GetWorld()->GetTimeSeconds();
 
-	AIController = Cast<AEnemyAIController>(GetController());
+	
 
 	//UE_LOG(LogTemp, Warning, TEXT("Sensed target set to true"));
 
@@ -229,6 +258,7 @@ void AEnemyCharacter::OnHearPlayer(APawn * PawnInstigator, const FVector & Locat
 		AIController->SetTargetEnemy(PawnInstigator);
 		AIController->SetTargetLocation(PawnInstigator->GetActorLocation());
 		//AIController->SetTargetLocation(PawnInstigator->GetActorLocation()); //  change to some kind of delay??? Watch vids etc
+		if (DebugAIText) { UE_LOG(LogTemp, Error, TEXT("Set target location - heard")); }
 		DebugTextRender->SetText(FText::FromString("Chasing-Heard"));
 	}
 
@@ -265,54 +295,50 @@ void AEnemyCharacter::SetPatrolPoints(bool b)
 	bPatrolPointsSet = b;
 }
 
-bool AEnemyCharacter::IsCloseToTargetLocation()
+bool AEnemyCharacter::IsCloseToLocation(FVector _location)
 {
 	// Check if enemy is close the target - as sometimes they can't reach the exact location
 
 	AIController = Cast<AEnemyAIController>(GetController());
-	FVector TargetLoc = AIController->GetTheTargetLocation();
 	FVector Loc = this->GetActorLocation();
 
-	if (Loc.X - TargetLoc.X < TargetDistanceThreshold && Loc.Y - TargetLoc.Y < TargetDistanceThreshold)
+	if (Loc.X - _location.X < TargetDistanceThreshold && Loc.Y - _location.Y < TargetDistanceThreshold)
 	{
 		//UE_LOG(LogTemp, Error, TEXT("At Target Location")); 
-		bIsCloseToTargetLocation = true;
+		//bIsCloseToTargetLocation = true;
 		return true;
 	}
 
-	bIsCloseToTargetLocation = false;
+	//bIsCloseToTargetLocation = false;
 	//UE_LOG(LogTemp, Error, TEXT("NOT At Target Location!   Target = %f,%f    Me = %f,%f"), TargetLoc.X, TargetLoc.Y, Loc.X, Loc.Y);
 	return false;
 }
 
-void AEnemyCharacter::CheckIfStuck(FVector CurrentPos, FVector LastPos)
+void AEnemyCharacter::CheckIfStuck()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("New: %s    Old: %s"), *this->GetActorLocation().ToString(), *LastLocation.ToString());
+	AIController = Cast<AEnemyAIController>(GetController());
 
-	if (CurrentPos == LastPos)
+	StuckTimer = GetWorld()->TimeSeconds;
+
+	if (this->GetActorLocation() == LastLocation)
 	{
-		if (!StuckTimerSet)
-		{
-			StuckTimer = GetWorld()->TimeSeconds;
-			StuckTimerSet = true;
-			//UE_LOG(LogTemp, Warning, TEXT("Stuck timer set"));
-		}
+		bSensedTarget = false;
+		AIController->SetTargetEnemy(nullptr);
+		if (DebugAIText) { UE_LOG(LogTemp, Error, TEXT("STUCK!!!")); }
 
-		if (GetWorld()->TimeSeconds - StuckTimer > StuckThreshold && StuckTimerSet)
+		if (!AIController->IsEventActive())
 		{
-			bSensedTarget = false;
-			AIController->SetTargetEnemy(nullptr);
-			StuckTimerSet = false;
-			if (DebugAIText) { UE_LOG(LogTemp, Error, TEXT("Stuck TIMER REACHED MAX!")); }
+			AIController->SetWaypoint(nullptr);
+			//AIController->FindWaypoint();
 		}
-
-		//UE_LOG(LogTemp, Warning, TEXT("Timer: %F"), GetWorld()->TimeSeconds - StuckTimer);
+		else // Event
+		{
+			AIController->SetEventActive(false);
+		}
 	}
 
-	else
-	{
-		StuckTimerSet = false;
-	}
+	LastLocation = this->GetActorLocation();
 }
 
 void AEnemyCharacter::OnCreateNoise(FVector location)

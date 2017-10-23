@@ -24,6 +24,7 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere, Category = "AI")
 	class AEnemyAIController* AIController;
 
 	/* Last time the player was spotted */
@@ -45,7 +46,7 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 	bool bSensedTarget;
 	FVector LastLocation;
 	float StuckTimer;
-	bool StuckTimerSet;
+//	bool StuckTimerSet;
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 		bool DebugAIText;
@@ -104,7 +105,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		float TargetDistanceThreshold;
 
-	bool IsCloseToTargetLocation();
+	bool IsCloseToLocation(FVector _location);
 
 	void CheckIfStuck(FVector CurrentPos, FVector LastPos);
 
@@ -113,6 +114,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 		FOnCollisionHit OnCollisionHit;
+	void CheckIfStuck();
 };
 
 
