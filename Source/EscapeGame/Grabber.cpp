@@ -101,6 +101,26 @@ void UGrabber::Release()
 	PhysicsHandle->ReleaseComponent();
 }
 
+void UGrabber::Throw(FVector direction)
+{
+	if (!PhysicsHandle)
+	{
+		return;
+	}
+
+	UPrimitiveComponent* comp = PhysicsHandle->GrabbedComponent;
+
+	if (comp == nullptr)
+	{
+		return;
+	}
+
+	comp->AddForce(direction * ThrowStrength, NAME_None, true);
+	PhysicsHandle->ReleaseComponent();
+	
+	//comp->AddForce(direction * ThrowStrength);
+}
+
 const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 {
 	/// Line-trace (AKA ray-cast) out to reach distance
