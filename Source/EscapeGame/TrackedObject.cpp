@@ -26,3 +26,18 @@ bool ATrackedObject::GetActiveState()
 {
 	return ActiveState;
 }
+
+int ATrackedObject::GetAlertLevel()
+{
+	return AlertLevel;
+}
+
+//bool ATrackedObject::Interact(AActor * ActorInstigator)
+//{
+//	return false;
+//}
+
+bool ATrackedObject::Interact_Implementation(AActor * ActorInstigator)
+{
+	return false;
+}

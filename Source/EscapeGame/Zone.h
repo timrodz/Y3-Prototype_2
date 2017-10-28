@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "EnemyCharacter.h"
 #include "Components/BoxComponent.h"
+#include "TrackedObject.h"
 #include "Zone.generated.h"
 
 
@@ -17,7 +18,7 @@ struct FItemStruct
 	UClass* BPType;
 
 	UPROPERTY()
-	TArray<AActor*> Items;
+	TArray<ATrackedObject*> Items;
 
 	FItemStruct()
 	{

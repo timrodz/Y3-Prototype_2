@@ -24,3 +24,13 @@ void AInteractableObject::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+//bool AInteractableObject::Interact(AActor * ActorInstigator)
+//{
+//	return false;
+//}
+
+bool AInteractableObject::Interact_Implementation(AActor * ActorInstigator)
+{
+	return false;
+}

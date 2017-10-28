@@ -35,9 +35,14 @@ public:
 	void SetActiveState(bool newState);
 	bool GetActiveState();
 
-	//UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Interaction")
-	//	bool Interact(AActor* ActorInstigator);
+	int GetAlertLevel();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
+		bool Interact(AActor* ActorInstigator);
+		virtual bool Interact_Implementation(AActor* ActorInstigator) override;
 };
+
+
 	
 	
 

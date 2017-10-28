@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Zone.h"
+#include "TrackedObject.h"
 
 
 // Sets default values
@@ -45,7 +46,7 @@ void AZone::BeginPlay()
 			// If so, add the overlapping item to the items array of the struct, and break out of inner loop
 			if (ItemStructArray[Index]->BPType == (*It)->GetClass())
 			{
-				ItemStructArray[Index]->Items.Add(*It);
+				ItemStructArray[Index]->Items.Add(Cast<ATrackedObject>(*It));
 				break;
 			}
 		}
@@ -71,7 +72,28 @@ void AZone::Tick(float DeltaTime)
 
 void AZone::UpdateZoneItems()
 {
+	int HighestAlert = 0;
 	
+	for (auto It = ItemStructArray.CreateConstIterator(); It; ++It)
+	{
+		for (auto It2 = (*It)->Items.CreateConstIterator(); It2; ++It2)
+		{
+			if ((*It2) && (*It2)->GetActiveState())
+			{				
+				HasItemToCheck = true;
+
+				if ((*It2)->GetAlertLevel() > HighestAlert)
+				{
+					ItemLocation = (*It2)->GetActorLocation();
+				}				
+
+				if (EnemyInZone)
+				{
+					//EnemyRef->CheckForActiveZoneEvents();
+				}
+			}
+		}
+	}
 }
 
 bool AZone::IsEnemyInZone()
@@ -88,7 +110,6 @@ void AZone::SetHasItemToCheck(bool _b)
 {
 	HasItemToCheck = _b;
 }
-
 
 void AZone::BeginActorOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
