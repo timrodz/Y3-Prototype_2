@@ -10,11 +10,18 @@
 
 
 USTRUCT()
-struct FJoyStruct
+struct FItemStruct
 {
 	GENERATED_USTRUCT_BODY()
 
+	AActor* BPType;
 
+	UPROPERTY()
+	TArray<AActor*> Items;
+
+	FItemStruct()
+	{
+	}
 };
 
 
@@ -27,10 +34,14 @@ class ESCAPEGAME_API AZone : public AActor
 	bool EnemyInZone;
 	FVector ItemLocation;
 	AEnemyCharacter* EnemyRef;
+
+	UPROPERTY(EditAnywhere, Category = "Collision")
 	UBoxComponent* BoxComponent;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Items")
+	UPROPERTY(EditAnywhere, Category = "Items To Track")
 	TArray<AActor*> BPsToTrack;
+
+	TArray<FItemStruct*> ItemStructArray;
 
 public:	
 	// Sets default values for this actor's properties

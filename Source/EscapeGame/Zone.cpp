@@ -18,10 +18,63 @@ void AZone::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Get arrays of items
-
 	OnActorBeginOverlap.AddDynamic(this, &AZone::BeginActorOverlap);
 	OnActorEndOverlap.AddDynamic(this, &AZone::EndActorOverlap);
+
+	// Make arrays
+
+	// Create the item struct array, one struct for each BP to track
+	for (auto It = BPsToTrack.CreateConstIterator(); It; ++It)
+	{
+		FItemStruct* newStruct = new FItemStruct();
+		ItemStructArray.Add(newStruct);
+	}
+	
+	// For each struct in the array, set the BP type as the BP in the "BPs to track" array
+	for (int32 Index = 0; Index != ItemStructArray.Num(); ++Index)
+	{
+		ItemStructArray[Index]->BPType = BPsToTrack[Index];
+	}
+/*
+	// Get all overlapping actors loop
+
+		//for (int32 Index = 0; Index != ItemStructArray.Num(); ++Index)
+		{
+			if (Cast<ItemStructArray[Index].BPType>(overlapping actor))
+			{
+				ItemStructArray[Index].Items.Add(overlapping actor)
+			}
+
+		}
+
+	
+	*/
+
+/*
+	struct FItemStruct
+	{
+		GENERATED_USTRUCT_BODY()
+
+			AActor* BPType;
+
+		UPROPERTY()
+			TArray<AActor*> Items;
+
+		FItemStruct()
+		{
+		}
+	};
+
+
+
+
+		UPROPERTY(EditAnywhere, Category = "Items To Track")
+			TArray<AActor*> BPsToTrack;
+
+		TArray<FItemStruct*> ItemStructArray;
+*/
+
+
 
 }
 
