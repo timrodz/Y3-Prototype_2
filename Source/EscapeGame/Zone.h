@@ -36,10 +36,10 @@ class ESCAPEGAME_API AZone : public AActor
 	AEnemyCharacter* EnemyRef;
 
 	UPROPERTY(EditAnywhere, Category = "Collision")
-	UBoxComponent* BoxComponent;
+		UBoxComponent* BoxComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Items To Track")
-	TArray<UClass*> BPsToTrack;
+		TArray<UClass*> BPsToTrack;
 
 	TArray<FItemStruct*> ItemStructArray;
 
@@ -56,7 +56,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateZoneItems();
+		void UpdateZoneItems();
 
 	bool IsEnemyInZone();
 
@@ -64,9 +64,9 @@ public:
 	void SetHasItemToCheck(bool _b);
 
 	UFUNCTION()
-	void BeginActorOverlap(AActor* OverlappedActor, AActor* OtherActor);
+		void BeginActorOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 	UFUNCTION()
-	void EndActorOverlap(AActor* OverlappedActor, AActor* OtherActor);
+		void EndActorOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 };
