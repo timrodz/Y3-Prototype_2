@@ -61,7 +61,7 @@ void AEnemyCharacter::BeginPlay()
 	{
 		// Set these pawnsensing functions to call our functions
 		PawnSensingComp->OnSeePawn.AddDynamic(this, &AEnemyCharacter::OnSeePlayer);
-		PawnSensingComp->OnHearNoise.AddDynamic(this, &AEnemyCharacter::OnHearPlayer);
+		PawnSensingComp->OnHearNoise.AddDynamic(this, &AEnemyCharacter::OnHearPlayer);	
 	}
 
 	this->OnActorHit.AddDynamic(this, &AEnemyCharacter::OnHit);
