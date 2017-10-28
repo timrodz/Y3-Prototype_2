@@ -14,7 +14,7 @@ struct FItemStruct
 {
 	GENERATED_USTRUCT_BODY()
 
-	AActor* BPType;
+	UClass* BPType;
 
 	UPROPERTY()
 	TArray<AActor*> Items;
@@ -39,7 +39,7 @@ class ESCAPEGAME_API AZone : public AActor
 	UBoxComponent* BoxComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Items To Track")
-	TArray<AActor*> BPsToTrack;
+	TArray<UClass*> BPsToTrack;
 
 	TArray<FItemStruct*> ItemStructArray;
 
@@ -55,6 +55,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable)
 	void UpdateZoneItems();
 
 	bool IsEnemyInZone();

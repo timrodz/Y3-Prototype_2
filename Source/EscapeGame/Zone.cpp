@@ -24,58 +24,43 @@ void AZone::BeginPlay()
 	// Make arrays
 
 	// Create the item struct array, one struct for each BP to track
+	// Add the BP to track as the BP type
 	for (auto It = BPsToTrack.CreateConstIterator(); It; ++It)
 	{
 		FItemStruct* newStruct = new FItemStruct();
 		ItemStructArray.Add(newStruct);
+		newStruct->BPType = *It;
 	}
 	
-	// For each struct in the array, set the BP type as the BP in the "BPs to track" array
-	for (int32 Index = 0; Index != ItemStructArray.Num(); ++Index)
-	{
-		ItemStructArray[Index]->BPType = BPsToTrack[Index];
-	}
-/*
-	// Get all overlapping actors loop
+	// Get all overlapping actors
+	TArray<AActor*> OverlappingActors;
+	GetOverlappingActors(OverlappingActors);
 
-		//for (int32 Index = 0; Index != ItemStructArray.Num(); ++Index)
+	// For each overlapping actor
+	// Check if the class of the overlapping actor equals the class of the particular structure in the structure array
+	for (auto It = OverlappingActors.CreateConstIterator(); It; ++It)
+	{
+		for (int32 Index = 0; Index != ItemStructArray.Num(); ++Index)
 		{
-			if (Cast<ItemStructArray[Index].BPType>(overlapping actor))
+			// If so, add the overlapping item to the items array of the struct, and break out of inner loop
+			if (ItemStructArray[Index]->BPType == (*It)->GetClass())
 			{
-				ItemStructArray[Index].Items.Add(overlapping actor)
+				ItemStructArray[Index]->Items.Add(*It);
+				break;
 			}
-
 		}
+	}
 
-	
-	*/
+	//UE_LOG(LogTemp, Warning, TEXT("Start of Tick: %s"), *this->GetActorLocation().ToString());
 
-/*
-	struct FItemStruct
+	for (auto It = ItemStructArray.CreateConstIterator(); It; ++It)
 	{
-		GENERATED_USTRUCT_BODY()
+		UE_LOG(LogTemp, Warning, TEXT("Item array has: %d"), (*It)->Items.Num());
+	}
 
-			AActor* BPType;
+	UE_LOG(LogTemp, Warning, TEXT("Item Struct Array has: %d"), ItemStructArray.Num());
 
-		UPROPERTY()
-			TArray<AActor*> Items;
-
-		FItemStruct()
-		{
-		}
-	};
-
-
-
-
-		UPROPERTY(EditAnywhere, Category = "Items To Track")
-			TArray<AActor*> BPsToTrack;
-
-		TArray<FItemStruct*> ItemStructArray;
-*/
-
-
-
+	UpdateZoneItems();
 }
 
 // Called every frame
