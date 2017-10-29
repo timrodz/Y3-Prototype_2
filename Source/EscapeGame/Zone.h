@@ -37,10 +37,6 @@ class ESCAPEGAME_API AZone : public AActor
 	bool EnemyInZone;
 	FVector ItemLocation;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Ref")
-	//TSubclassOf<class AEnemyCharacter> EnemyRef;
-
-	//class AEnemyCharacter* EnemyRef;
 	AEnemyCharacter* EnemyRef;
 
 	UPROPERTY(EditAnywhere, Category = "Collision")

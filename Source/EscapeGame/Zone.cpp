@@ -89,9 +89,9 @@ void AZone::UpdateZoneItems()
 					HighestAlert = (*It2)->GetAlertLevel();
 				}
 
-				if (EnemyInZone)
+				if (EnemyInZone && EnemyRef)
 				{
-					//EnemyRef->CheckForActiveZoneEvents();
+					EnemyRef->CheckForActiveZoneEvents();
 				}
 			}
 		}

@@ -6,7 +6,6 @@
 #include "GameFramework/Character.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/CapsuleComponent.h"
-//#include "Zone.h"
 #include "EnemyCharacter.generated.h"
 
 class AZone;
@@ -49,8 +48,6 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 	float StuckTimer;
 //	bool StuckTimerSet;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Current Zone")
-	//TSubclassOf<class AZone> CurrentZone;
 	AZone* CurrentZone;
 
 	UPROPERTY(EditAnywhere, Category = "AI")
@@ -116,14 +113,14 @@ public:
 
 	//// Zone stuff
 
-	//UFUNCTION(BlueprintCallable)
-	//	void CheckForActiveZoneEvents();
+	UFUNCTION(BlueprintCallable)
+		void CheckForActiveZoneEvents();
 
-	//UFUNCTION(BlueprintCallable)
-	//	void SetZoneEventActive();
+	UFUNCTION(BlueprintCallable)
+		void SetZoneEventActive();
 
-	//UFUNCTION(BlueprintCallable)
-	//	void SetZoneEventComplete();
+	UFUNCTION(BlueprintCallable)
+		void SetZoneEventComplete();
 };
 
 

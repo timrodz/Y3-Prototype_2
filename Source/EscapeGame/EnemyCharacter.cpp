@@ -18,8 +18,6 @@ AEnemyCharacter::AEnemyCharacter(const class FObjectInitializer& ObjectInitializ
 	bIsCloseToTargetLocation = false;
 	bTargetTimerSet = false;
 
-	//CurrentZone = new AZone();
-
 	// Assign AI controller class in blueprint extension of this class
 
 	/* Our sensing component to detect players by visibility and noise checks. */
@@ -341,34 +339,34 @@ void AEnemyCharacter::CheckIfStuck()
 	LastLocation = this->GetActorLocation();
 }
 
-//void AEnemyCharacter::CheckForActiveZoneEvents()
-//{
-//	if ((CurrentZone) && CurrentZone->GetHasItemToCheck())
-//	{
-//		SetZoneEventActive();
-//	}
-//	else
-//	{
-//		SetZoneEventComplete();
-//	}
-//}
-//
-//void AEnemyCharacter::SetZoneEventActive()
-//{
-//	AIController = Cast<AEnemyAIController>(GetController());
-//	AIController->SetEventActive(true);
-//	AIController->SetEventLocation(CurrentZone->GetItemLocation());
-//	UE_LOG(LogTemp, Warning, TEXT("Event Active in Current Zone"));
-//
-//}
-//
-//void AEnemyCharacter::SetZoneEventComplete()
-//{
-//	AIController = Cast<AEnemyAIController>(GetController());
-//	AIController->SetEventActive(false);
-//	CurrentZone->SetHasItemToCheck(false);
-//	UE_LOG(LogTemp, Warning, TEXT("Zone Event Complete"));
-//}
+void AEnemyCharacter::CheckForActiveZoneEvents()
+{
+	if ((CurrentZone) && CurrentZone->GetHasItemToCheck())
+	{
+		SetZoneEventActive();
+	}
+	else
+	{
+		SetZoneEventComplete();
+	}
+}
+
+void AEnemyCharacter::SetZoneEventActive()
+{
+	AIController = Cast<AEnemyAIController>(GetController());
+	AIController->SetEventActive(true);
+	AIController->SetEventLocation(CurrentZone->GetItemLocation());
+	UE_LOG(LogTemp, Warning, TEXT("Event Active in Current Zone"));
+
+}
+
+void AEnemyCharacter::SetZoneEventComplete()
+{
+	AIController = Cast<AEnemyAIController>(GetController());
+	AIController->SetEventActive(false);
+	CurrentZone->SetHasItemToCheck(false);
+	UE_LOG(LogTemp, Warning, TEXT("Zone Event Complete"));
+}
 // Called to bind functionality to input
 //void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 //{
