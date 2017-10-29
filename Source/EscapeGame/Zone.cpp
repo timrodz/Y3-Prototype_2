@@ -49,8 +49,10 @@ void AZone::BeginPlay()
 			{
 				ATrackedObject* object = Cast<ATrackedObject>(*It);
 
+				// Check if cast worked
 				if (object)
 				{
+					// Add the tracked object to the item list and set its zone to this zone
 					ItemStructArray[Index]->Items.Add(object);
 					object->SetCurrentZone(this);
 					break;
@@ -81,12 +83,16 @@ void AZone::UpdateZoneItems()
 {
 	int HighestAlert = 0;
 
+	// Iterate over item struct array
 	for (auto It = ItemStructArray.CreateConstIterator(); It; ++It)
 	{
+		// Iterate over item array in that struct
 		for (auto It2 = (*It)->Items.CreateConstIterator(); It2; ++It2)
 		{
+			// If the item is valid and is active
 			if ((*It2) && (*It2)->GetActiveState())
 			{
+				// Check its alert level
 				if ((*It2)->GetAlertLevel() >= HighestAlert)
 				{
 					HasItemToCheck = true;
@@ -95,6 +101,7 @@ void AZone::UpdateZoneItems()
 					CurrentTarget = (*It2);
 				}
 
+				// If enemy is currently in the zone, recheck for events
 				if (EnemyInZone && EnemyRef)
 				{
 					EnemyRef->CheckForActiveZoneEvents();

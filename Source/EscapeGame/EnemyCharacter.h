@@ -8,7 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "EnemyCharacter.generated.h"
 
-class AZone;
+class AZone; 
 
 UENUM(BlueprintType)
 enum class EEnemyType : uint8
