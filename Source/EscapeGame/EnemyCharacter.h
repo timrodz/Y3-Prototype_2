@@ -9,7 +9,7 @@
 //#include "Zone.h"
 #include "EnemyCharacter.generated.h"
 
-//class AZone;
+class AZone;
 
 UENUM(BlueprintType)
 enum class EEnemyType : uint8
@@ -51,7 +51,7 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Current Zone")
 	//TSubclassOf<class AZone> CurrentZone;
-	//AZone* CurrentZone;
+	AZone* CurrentZone;
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 		bool DebugAIText;
