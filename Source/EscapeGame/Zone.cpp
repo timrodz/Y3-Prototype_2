@@ -65,10 +65,10 @@ void AZone::BeginPlay()
 
 	for (auto It = ItemStructArray.CreateConstIterator(); It; ++It)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Item array has: %d"), (*It)->Items.Num());
+		UE_LOG(LogTemp, Warning, TEXT("%s array has %d tracked items"), *(*It)->Items[0]->GetName(), (*It)->Items.Num());
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Item Struct Array has: %d"), ItemStructArray.Num());
+	UE_LOG(LogTemp, Warning, TEXT("Item Struct Array has %d different BPs to track"), ItemStructArray.Num());
 
 	UpdateZoneItems();
 }
