@@ -2,6 +2,7 @@
 
 #include "Zone.h"
 #include "TrackedObject.h"
+#include "EnemyCharacter.h"
 
 
 // Sets default values
@@ -73,19 +74,20 @@ void AZone::Tick(float DeltaTime)
 void AZone::UpdateZoneItems()
 {
 	int HighestAlert = 0;
-	
+
 	for (auto It = ItemStructArray.CreateConstIterator(); It; ++It)
 	{
 		for (auto It2 = (*It)->Items.CreateConstIterator(); It2; ++It2)
 		{
 			if ((*It2) && (*It2)->GetActiveState())
-			{				
+			{
 				HasItemToCheck = true;
 
 				if ((*It2)->GetAlertLevel() > HighestAlert)
 				{
 					ItemLocation = (*It2)->GetActorLocation();
-				}				
+					HighestAlert = (*It2)->GetAlertLevel();
+				}
 
 				if (EnemyInZone)
 				{
@@ -95,7 +97,6 @@ void AZone::UpdateZoneItems()
 		}
 	}
 }
-
 bool AZone::IsEnemyInZone()
 {
 	return EnemyInZone;
@@ -128,5 +129,15 @@ void AZone::EndActorOverlap(AActor* OverlappedActor, AActor* OtherActor)
 		EnemyInZone = false;
 	}
 
+}
+
+FVector AZone::GetItemLocation()
+{
+	return ItemLocation;
+}
+
+void AZone::SetItemLocation(FVector location)
+{
+	ItemLocation = location;
 }
 

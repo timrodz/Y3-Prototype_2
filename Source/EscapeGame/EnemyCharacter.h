@@ -6,7 +6,10 @@
 #include "GameFramework/Character.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/CapsuleComponent.h"
+//#include "Zone.h"
 #include "EnemyCharacter.generated.h"
+
+//class AZone;
 
 UENUM(BlueprintType)
 enum class EEnemyType : uint8
@@ -45,6 +48,10 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 	FVector LastLocation;
 	float StuckTimer;
 //	bool StuckTimerSet;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Current Zone")
+	//TSubclassOf<class AZone> CurrentZone;
+	//AZone* CurrentZone;
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 		bool DebugAIText;
@@ -106,6 +113,17 @@ public:
 	bool IsCloseToLocation(FVector _location);
 
 	void CheckIfStuck();
+
+	//// Zone stuff
+
+	//UFUNCTION(BlueprintCallable)
+	//	void CheckForActiveZoneEvents();
+
+	//UFUNCTION(BlueprintCallable)
+	//	void SetZoneEventActive();
+
+	//UFUNCTION(BlueprintCallable)
+	//	void SetZoneEventComplete();
 };
 
 

@@ -4,11 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "EnemyCharacter.h"
+//#include "EnemyCharacter.h"
 #include "Components/BoxComponent.h"
-#include "TrackedObject.h"
+//#include "TrackedObject.h"
 #include "Zone.generated.h"
 
+class ATrackedObject;
+class AEnemyCharacter;
 
 USTRUCT()
 struct FItemStruct
@@ -34,6 +36,11 @@ class ESCAPEGAME_API AZone : public AActor
 	bool HasItemToCheck;
 	bool EnemyInZone;
 	FVector ItemLocation;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Ref")
+	//TSubclassOf<class AEnemyCharacter> EnemyRef;
+
+	//class AEnemyCharacter* EnemyRef;
 	AEnemyCharacter* EnemyRef;
 
 	UPROPERTY(EditAnywhere, Category = "Collision")
@@ -69,5 +76,8 @@ public:
 
 	UFUNCTION()
 		void EndActorOverlap(AActor* OverlappedActor, AActor* OtherActor);
+
+	FVector GetItemLocation();
+	void SetItemLocation(FVector location);
 
 };
