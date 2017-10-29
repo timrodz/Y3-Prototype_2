@@ -87,10 +87,9 @@ void AZone::UpdateZoneItems()
 		{
 			if ((*It2) && (*It2)->GetActiveState())
 			{
-				HasItemToCheck = true;
-
-				if ((*It2)->GetAlertLevel() > HighestAlert)
+				if ((*It2)->GetAlertLevel() >= HighestAlert)
 				{
+					HasItemToCheck = true;
 					ItemLocation = (*It2)->GetActorLocation();
 					HighestAlert = (*It2)->GetAlertLevel();
 					CurrentTarget = (*It2);
