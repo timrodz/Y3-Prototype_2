@@ -8,6 +8,8 @@
 #include "Components/CapsuleComponent.h"
 #include "EnemyCharacter.generated.h"
 
+class AZone; 
+
 UENUM(BlueprintType)
 enum class EEnemyType : uint8
 {
@@ -106,6 +108,20 @@ public:
 	bool IsCloseToLocation(FVector _location);
 
 	void CheckIfStuck();
+
+	//// Zone stuff
+
+	UPROPERTY(BlueprintReadWrite, Category = "AI")
+		AZone* CurrentZone;
+
+	UFUNCTION(BlueprintCallable)
+		void CheckForActiveZoneEvents();
+
+	UFUNCTION(BlueprintCallable)
+		void SetZoneEventActive();
+
+	UFUNCTION(BlueprintCallable)
+		void SetZoneEventComplete();
 };
 
 
