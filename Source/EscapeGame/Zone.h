@@ -39,6 +39,8 @@ class ESCAPEGAME_API AZone : public AActor
 
 	AEnemyCharacter* EnemyRef;
 
+	ATrackedObject* CurrentTarget;
+
 	UPROPERTY(EditAnywhere, Category = "Collision")
 		UBoxComponent* BoxComponent;
 
@@ -75,5 +77,8 @@ public:
 
 	FVector GetItemLocation();
 	void SetItemLocation(FVector location);
+
+	void SetCurrentTargetToInactive();
+	ATrackedObject* GetCurrentTarget();
 
 };

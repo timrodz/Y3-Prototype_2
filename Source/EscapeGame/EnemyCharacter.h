@@ -48,8 +48,6 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 	float StuckTimer;
 //	bool StuckTimerSet;
 
-	AZone* CurrentZone;
-
 	UPROPERTY(EditAnywhere, Category = "AI")
 		bool DebugAIText;
 
@@ -112,6 +110,9 @@ public:
 	void CheckIfStuck();
 
 	//// Zone stuff
+
+	UPROPERTY(BlueprintReadWrite, Category = "AI")
+		AZone* CurrentZone;
 
 	UFUNCTION(BlueprintCallable)
 		void CheckForActiveZoneEvents();

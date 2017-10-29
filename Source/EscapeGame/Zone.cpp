@@ -47,8 +47,14 @@ void AZone::BeginPlay()
 			// If so, add the overlapping item to the items array of the struct, and break out of inner loop
 			if (ItemStructArray[Index]->BPType == (*It)->GetClass())
 			{
-				ItemStructArray[Index]->Items.Add(Cast<ATrackedObject>(*It));
-				break;
+				ATrackedObject* object = Cast<ATrackedObject>(*It);
+
+				if (object)
+				{
+					ItemStructArray[Index]->Items.Add(object);
+					object->SetCurrentZone(this);
+					break;
+				}
 			}
 		}
 	}
@@ -87,6 +93,7 @@ void AZone::UpdateZoneItems()
 				{
 					ItemLocation = (*It2)->GetActorLocation();
 					HighestAlert = (*It2)->GetAlertLevel();
+					CurrentTarget = (*It2);
 				}
 
 				if (EnemyInZone && EnemyRef)
@@ -139,5 +146,18 @@ FVector AZone::GetItemLocation()
 void AZone::SetItemLocation(FVector location)
 {
 	ItemLocation = location;
+}
+
+void AZone::SetCurrentTargetToInactive()
+{
+	if (CurrentTarget)
+	{
+		CurrentTarget->SetActiveState(false);
+	}	
+}
+
+ATrackedObject * AZone::GetCurrentTarget()
+{
+	return CurrentTarget;
 }
 

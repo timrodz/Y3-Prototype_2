@@ -108,11 +108,11 @@ void AEnemyCharacter::Tick(float DeltaTime)
 		//UE_LOG(LogTemp, Warning, TEXT("Target Location: %s"), *AIController->GetTargetLocation().ToString());
 
 		DebugTextRender->SetText(FText::FromString("Event"));
-		UE_LOG(LogTemp, Warning, TEXT("My Loc: %s   Event Loc: %s"), *this->GetActorLocation().ToString(), *AIController->GetEventLocation().ToString());
+		//_LOG(LogTemp, Warning, TEXT("My Loc: %s   Event Loc: %s"), *this->GetActorLocation().ToString(), *AIController->GetEventLocation().ToString());
 
 		if (IsCloseToLocation(AIController->GetEventLocation()))
 		{
-		    UE_LOG(LogTemp, Warning, TEXT("At Event Target")); 
+		    //UE_LOG(LogTemp, Warning, TEXT("At Event Target")); 
 			//AIController->SetEventActive(false);			
 		}
 
@@ -364,7 +364,16 @@ void AEnemyCharacter::SetZoneEventComplete()
 {
 	AIController = Cast<AEnemyAIController>(GetController());
 	AIController->SetEventActive(false);
-	CurrentZone->SetHasItemToCheck(false);
+
+	if ((CurrentZone) && CurrentZone->GetHasItemToCheck())
+	{
+		CurrentZone->SetHasItemToCheck(false);
+
+		if (CurrentZone->GetCurrentTarget())
+		{
+			CurrentZone->SetCurrentTargetToInactive();
+		}
+	}
 	UE_LOG(LogTemp, Warning, TEXT("Zone Event Complete"));
 }
 // Called to bind functionality to input

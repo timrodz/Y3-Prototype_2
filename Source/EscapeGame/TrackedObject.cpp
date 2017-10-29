@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TrackedObject.h"
+#include "Zone.h"
 
 ATrackedObject::ATrackedObject()
 {
@@ -30,6 +31,11 @@ bool ATrackedObject::GetActiveState()
 int ATrackedObject::GetAlertLevel()
 {
 	return AlertLevel;
+}
+
+void ATrackedObject::SetCurrentZone(AZone* _zone)
+{
+	Zone = _zone;
 }
 
 //bool ATrackedObject::Interact(AActor * ActorInstigator)

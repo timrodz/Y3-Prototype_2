@@ -6,6 +6,7 @@
 #include "InteractableObject.h"
 #include "TrackedObject.generated.h"
 
+class AZone;
 /**
  * 
  */
@@ -37,9 +38,14 @@ public:
 
 	int GetAlertLevel();
 
+	void SetCurrentZone(AZone* _zone);
+
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 		bool Interact(AActor* ActorInstigator);
 		virtual bool Interact_Implementation(AActor* ActorInstigator) override;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Zone")
+		AZone* Zone;
 };
 
 
