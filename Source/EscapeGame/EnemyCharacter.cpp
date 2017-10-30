@@ -3,7 +3,7 @@
 #include "EnemyCharacter.h"
 #include "EnemyAIController.h"
 #include "FirstPersonCharacterController.h"
-
+#include "Zone.h"
 #include "Perception/PawnSensingComponent.h"
 
 
@@ -61,7 +61,7 @@ void AEnemyCharacter::BeginPlay()
 	{
 		// Set these pawnsensing functions to call our functions
 		PawnSensingComp->OnSeePawn.AddDynamic(this, &AEnemyCharacter::OnSeePlayer);
-		PawnSensingComp->OnHearNoise.AddDynamic(this, &AEnemyCharacter::OnHearPlayer);
+		PawnSensingComp->OnHearNoise.AddDynamic(this, &AEnemyCharacter::OnHearPlayer);	
 	}
 
 	this->OnActorHit.AddDynamic(this, &AEnemyCharacter::OnHit);
@@ -108,11 +108,11 @@ void AEnemyCharacter::Tick(float DeltaTime)
 		//UE_LOG(LogTemp, Warning, TEXT("Target Location: %s"), *AIController->GetTargetLocation().ToString());
 
 		DebugTextRender->SetText(FText::FromString("Event"));
-		UE_LOG(LogTemp, Warning, TEXT("My Loc: %s   Event Loc: %s"), *this->GetActorLocation().ToString(), *AIController->GetEventLocation().ToString());
+		//_LOG(LogTemp, Warning, TEXT("My Loc: %s   Event Loc: %s"), *this->GetActorLocation().ToString(), *AIController->GetEventLocation().ToString());
 
 		if (IsCloseToLocation(AIController->GetEventLocation()))
 		{
-		    UE_LOG(LogTemp, Warning, TEXT("At Event Target")); 
+		    //UE_LOG(LogTemp, Warning, TEXT("At Event Target")); 
 			//AIController->SetEventActive(false);			
 		}
 
@@ -339,7 +339,43 @@ void AEnemyCharacter::CheckIfStuck()
 	LastLocation = this->GetActorLocation();
 }
 
+void AEnemyCharacter::CheckForActiveZoneEvents()
+{
+	if ((CurrentZone) && CurrentZone->GetHasItemToCheck())
+	{
+		SetZoneEventActive();
+	}
+	else
+	{
+		SetZoneEventComplete();
+	}
+}
 
+void AEnemyCharacter::SetZoneEventActive()
+{
+	AIController = Cast<AEnemyAIController>(GetController());
+	AIController->SetEventActive(true);
+	AIController->SetEventLocation(CurrentZone->GetItemLocation());
+	UE_LOG(LogTemp, Warning, TEXT("Event Active in Current Zone"));
+
+}
+
+void AEnemyCharacter::SetZoneEventComplete()
+{
+	AIController = Cast<AEnemyAIController>(GetController());
+	AIController->SetEventActive(false);
+
+	if ((CurrentZone) && CurrentZone->GetHasItemToCheck())
+	{
+		CurrentZone->SetHasItemToCheck(false);
+
+		if (CurrentZone->GetCurrentTarget())
+		{
+			CurrentZone->SetCurrentTargetToInactive();
+		}
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Zone Event Complete"));
+}
 // Called to bind functionality to input
 //void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 //{
