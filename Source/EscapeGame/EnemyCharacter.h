@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "InteractableObject.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Components/TextRenderComponent.h"
@@ -106,6 +108,11 @@ public:
 		float TargetDistanceThreshold;
 
 	bool IsCloseToLocation(FVector _location);
+
+	void CheckIfStuck(FVector CurrentPos, FVector LastPos);
+
+	UFUNCTION()
+		void OnCreateNoise(FVector location);
 
 	void CheckIfStuck();
 
