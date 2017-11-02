@@ -11,11 +11,11 @@
 #include "Actions/PawnAction.h"
 #include "BehaviorTree/BTTaskNode.h"
 #include <vector>
-#include "EnemyAIController.generated.h"
 
-// Delegates
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTestDelegate);
-//DECLARE_DELEGATE(FTestDelegate);
+// Casting messages
+#include "InteractableObject.h"
+
+#include "EnemyAIController.generated.h"
 
 UCLASS()
 class ESCAPEGAME_API AEnemyAIController : public AAIController
@@ -59,11 +59,11 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 		FName EventLocationKeyName;
 	
 public:
+	UFUNCTION()
+	void OnHearNoise(FVector location);
 
-	//void TestFunction();
-
-//	UPROPERTY(BlueprintAssignable, Category = "Test")
-//		FTestDelegate OnTestDelegate;
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+		FOnCollisionHit OnCollisionHit;
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 		void FindWaypoint();
