@@ -3,18 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Actor.h"
 #include "InteractableObject.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCollisionHit, FVector, location);
-
 UCLASS()
-class ESCAPEGAME_API AInteractableObject : public APawn
+class ESCAPEGAME_API AInteractableObject : public AActor
 {
 	GENERATED_BODY()
-
-public:
-	// Sets default values for this pawn's properties
+	
+public:	
+	// Sets default values for this actor's properties
 	AInteractableObject();
 
 protected:
@@ -25,16 +23,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	UFUNCTION()
-	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& hit);
-
-	UFUNCTION()
-		void OnCreateNoise(FVector location);
-
-	UPROPERTY(BlueprintAssignable, Category = "Events")
-		FOnCollisionHit OnCollisionHit;
-
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
+		bool Interact(AActor* ActorInstigator);
+		virtual bool Interact_Implementation(AActor* ActorInstigator);
 };
