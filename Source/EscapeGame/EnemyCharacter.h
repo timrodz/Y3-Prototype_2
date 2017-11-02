@@ -114,8 +114,6 @@ public:
 	UFUNCTION()
 		void OnCreateNoise(FVector location);
 
-	UPROPERTY(BlueprintAssignable, Category = "Events")
-		FOnCollisionHit OnCollisionHit;
 	void CheckIfStuck();
 
 	//// Zone stuff
