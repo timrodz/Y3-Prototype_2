@@ -62,9 +62,6 @@ public:
 	UFUNCTION()
 	void OnHearNoise(FVector location);
 
-	UPROPERTY(BlueprintAssignable, Category = "Events")
-		FOnCollisionHit OnCollisionHit;
-
 	UFUNCTION(BlueprintCallable, Category = "AI")
 		void FindWaypoint();
 
