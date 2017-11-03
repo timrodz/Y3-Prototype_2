@@ -61,14 +61,13 @@ void AZone::BeginPlay()
 		}
 	}
 
-	//UE_LOG(LogTemp, Warning, TEXT("Start of Tick: %s"), *this->GetActorLocation().ToString());
-
+	// Log info
+	UE_LOG(LogTemp, Warning, TEXT("%s has %d different BPs to track"), *this->GetName(), ItemStructArray.Num());
+	
 	for (auto It = ItemStructArray.CreateConstIterator(); It; ++It)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s array has %d tracked items"), *(*It)->Items[0]->GetName(), (*It)->Items.Num());
+		UE_LOG(LogTemp, Warning, TEXT("     %s array has %d tracked items"), *(*It)->BPType->GetName(), (*It)->Items.Num());
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("Item Struct Array has %d different BPs to track"), ItemStructArray.Num());
 
 	UpdateZoneItems();
 }
@@ -86,25 +85,29 @@ void AZone::UpdateZoneItems()
 	// Iterate over item struct array
 	for (auto It = ItemStructArray.CreateConstIterator(); It; ++It)
 	{
-		// Iterate over item array in that struct
-		for (auto It2 = (*It)->Items.CreateConstIterator(); It2; ++It2)
+		// If array is not empty
+		if ((*It)->Items.Num() > 0)
 		{
-			// If the item is valid and is active
-			if ((*It2) && (*It2)->GetActiveState())
+			// Iterate over item array in that struct
+			for (auto It2 = (*It)->Items.CreateConstIterator(); It2; ++It2)
 			{
-				// Check its alert level
-				if ((*It2)->GetAlertLevel() >= HighestAlert)
+				// If the item is valid and is active
+				if ((*It2) && (*It2)->GetActiveState())
 				{
-					HasItemToCheck = true;
-					ItemLocation = (*It2)->GetActorLocation();
-					HighestAlert = (*It2)->GetAlertLevel();
-					CurrentTarget = (*It2);
-				}
+					// Check its alert level
+					if ((*It2)->GetAlertLevel() >= HighestAlert)
+					{
+						HasItemToCheck = true;
+						ItemLocation = (*It2)->GetActorLocation();
+						HighestAlert = (*It2)->GetAlertLevel();
+						CurrentTarget = (*It2);
+					}
 
-				// If enemy is currently in the zone, recheck for events
-				if (EnemyInZone && EnemyRef)
-				{
-					EnemyRef->CheckForActiveZoneEvents();
+					// If enemy is currently in the zone, recheck for events
+					if (EnemyInZone && EnemyRef)
+					{
+						EnemyRef->CheckForActiveZoneEvents();
+					}
 				}
 			}
 		}

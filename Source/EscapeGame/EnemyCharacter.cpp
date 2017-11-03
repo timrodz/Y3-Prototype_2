@@ -65,6 +65,8 @@ void AEnemyCharacter::BeginPlay()
 	}
 
 	this->OnActorHit.AddDynamic(this, &AEnemyCharacter::OnHit);
+	this->OnCollisionHit.AddDynamic(this, &AEnemyCharacter::OnCreateNoise);
+	//this->OnCollisionHit.AddDynamic(this, &AInteractableObject::OnCreateNoise);
 
 	DebugTextRender = this->FindComponentByClass<UTextRenderComponent>();
 	AIController = Cast<AEnemyAIController>(GetController());
