@@ -111,8 +111,6 @@ public:
 
 	void CheckIfStuck(FVector CurrentPos, FVector LastPos);
 
-	UFUNCTION()
-		void OnCreateNoise(FVector location);
 
 	void CheckIfStuck();
 
