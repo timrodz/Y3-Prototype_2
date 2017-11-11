@@ -51,6 +51,11 @@ bool AEnemyCharacter::HasSensedTarget()
 	return bSensedTarget;
 }
 
+bool AEnemyCharacter::IsEnemyPatrolling()
+{
+	return bIsPatrolling;
+}
+
 // Called when the game starts or when spawned
 void AEnemyCharacter::BeginPlay()
 {
@@ -99,7 +104,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	// Check for events
 	if (AIController->IsEventActive() && AIController->IsTargetLocationSet())
 	{
-
+		bIsPatrolling = false;
 		// SET MOVMENT SPEED - HOW TO ACCESS CHARACTER MOVEMENT COMPONENT???????????????
 
 		//UE_LOG(LogTemp, Warning, TEXT("Event Active"));
@@ -126,6 +131,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	// Check if enemy has seen or heard anything
 	if (bSensedTarget)
 	{
+		bIsPatrolling = false;
 		//UE_LOG(LogTemp, Warning, TEXT("SENSED TARGET"));
 		//CheckIfStuck(this->GetActorLocation(), LastLocation);
 
@@ -172,6 +178,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	// Patrolling
 	if (bPatrolPointsSet && !bSensedTarget)
 	{
+		bIsPatrolling = true;
 		DebugTextRender->SetText(FText::FromString("Patrolling"));
 		AIController = Cast<AEnemyAIController>(GetController());
 		AIController->DrawDebugLineToTarget();
@@ -338,6 +345,11 @@ void AEnemyCharacter::CheckIfStuck()
 	}
 
 	LastLocation = this->GetActorLocation();
+}
+
+void AEnemyCharacter::MoveToLocation(FVector newLocation)
+{
+	this->SetActorLocation(newLocation);
 }
 
 void AEnemyCharacter::CheckForActiveZoneEvents()

@@ -46,6 +46,7 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 	bool bIsCloseToTargetLocation;
 	bool bTargetTimerSet;
 	bool bSensedTarget;
+	bool bIsPatrolling;
 	FVector LastLocation;
 	float StuckTimer;
 //	bool StuckTimerSet;
@@ -86,6 +87,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 		bool HasSensedTarget();
+
+	UFUNCTION(BlueprintCallable)
+		bool IsEnemyPatrolling();
 	
 public:
 
@@ -109,10 +113,12 @@ public:
 
 	bool IsCloseToLocation(FVector _location);
 
-	void CheckIfStuck(FVector CurrentPos, FVector LastPos);
-
+	//void CheckIfStuck(FVector CurrentPos, FVector LastPos);
 
 	void CheckIfStuck();
+
+	UFUNCTION(BlueprintCallable)
+		void MoveToLocation(FVector newLocation);
 
 	//// Zone stuff
 
