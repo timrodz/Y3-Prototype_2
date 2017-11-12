@@ -55,6 +55,12 @@ bool AEnemyCharacter::HasSensedTarget()
 	return bSensedTarget;
 }
 
+void AEnemyCharacter::SetSensedTargetTrue()
+{
+	CharMovement->MaxWalkSpeed = WalkSpeedSensedTarget;
+	bSensedTarget = true;
+}
+
 bool AEnemyCharacter::IsEnemyPatrolling()
 {
 	return bIsPatrolling;
@@ -219,7 +225,7 @@ void AEnemyCharacter::OnSeePlayer(APawn * Pawn)
 
 	// Increase speed
 
-	CharMovement->MaxWalkSpeed = WalkSpeedSensedTarget;
+	SetSensedTargetTrue();
 
 	if (AIController->IsEventActive())
 	{
@@ -228,7 +234,6 @@ void AEnemyCharacter::OnSeePlayer(APawn * Pawn)
 
 	/* Keep track of the time the player was last sensed in order to clear the target */
 	LastSeenTime = GetWorld()->GetTimeSeconds();
-	bSensedTarget = true;
 
 	AFirstPersonCharacterController* SensedPawn = Cast<AFirstPersonCharacterController>(Pawn);
 
@@ -253,7 +258,7 @@ void AEnemyCharacter::OnHearPlayer(APawn * PawnInstigator, const FVector & Locat
 	//	BroadcastUpdateAudioLoop(true);
 	//}
 
-	CharMovement->MaxWalkSpeed = WalkSpeedSensedTarget;
+	SetSensedTargetTrue();
 
 	AIController = Cast<AEnemyAIController>(GetController());
 
@@ -267,7 +272,6 @@ void AEnemyCharacter::OnHearPlayer(APawn * PawnInstigator, const FVector & Locat
 	float DistanceToNoise = FVector::Dist(this->GetActorLocation(), PawnInstigator->GetActorLocation());
 	//UE_LOG(LogTemp, Warning, TEXT("Distance to noise: %f"), DistanceToNoise);
 
-	bSensedTarget = true;
 	LastHeardTime = GetWorld()->GetTimeSeconds();
 
 	

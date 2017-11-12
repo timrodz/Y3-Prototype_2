@@ -97,6 +97,9 @@ protected:
 		bool HasSensedTarget();
 
 	UFUNCTION(BlueprintCallable)
+		void SetSensedTargetTrue();
+
+	UFUNCTION(BlueprintCallable)
 		bool IsEnemyPatrolling();
 	
 public:

@@ -3,6 +3,7 @@
 #include "Zone.h"
 #include "TrackedObject.h"
 #include "EnemyCharacter.h"
+#include "FirstPersonCharacterController.h"
 
 
 // Sets default values
@@ -123,6 +124,11 @@ bool AZone::IsEnemyInZone()
 	return EnemyInZone;
 }
 
+bool AZone::IsPlayerInZone()
+{
+	return PlayerInZone;
+}
+
 bool AZone::GetHasItemToCheck()
 {
 	return HasItemToCheck;
@@ -140,6 +146,14 @@ void AZone::BeginActorOverlap(AActor* OverlappedActor, AActor* OtherActor)
 	if (EnemyRef)
 	{
 		EnemyInZone = true;
+		return;
+	}
+
+	PlayerRef = Cast<AFirstPersonCharacterController>(OtherActor);
+
+	if (PlayerRef)
+	{
+		PlayerInZone = true;
 	}
 }
 
@@ -148,6 +162,14 @@ void AZone::EndActorOverlap(AActor* OverlappedActor, AActor* OtherActor)
 	if (Cast<AEnemyCharacter>(OtherActor))
 	{
 		EnemyInZone = false;
+		return;
+	}
+
+	PlayerRef = Cast<AFirstPersonCharacterController>(OtherActor);
+
+	if (PlayerRef)
+	{
+		PlayerInZone = false;
 	}
 
 }
