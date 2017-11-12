@@ -85,6 +85,14 @@ void AEnemyAIController::SetWaypoint(AEnemyWaypoint * NewWaypoint)
 	}
 }
 
+void AEnemyAIController::SetWaypointNull()
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsObject(CurrentWaypointKeyName, nullptr);
+	}
+}
+
 void AEnemyAIController::SetShouldWander(bool ShouldWander)
 {
 	bShouldWander = ShouldWander;
