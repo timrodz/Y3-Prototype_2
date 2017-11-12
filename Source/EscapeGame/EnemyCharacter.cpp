@@ -5,6 +5,7 @@
 #include "FirstPersonCharacterController.h"
 #include "Zone.h"
 #include "Perception/PawnSensingComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 // Sets default values
@@ -44,6 +45,9 @@ AEnemyCharacter::AEnemyCharacter(const class FObjectInitializer& ObjectInitializ
 //	StuckTimerSet = false;
 	StuckThreshold = 10.0f;
 	DebugAIText = false;
+
+	WalkSpeedDefault = 150.0f;
+	WalkSpeedSensedTarget = 250.0f;
 }
 
 bool AEnemyCharacter::HasSensedTarget()
@@ -78,6 +82,9 @@ void AEnemyCharacter::BeginPlay()
 	AIController->SetWaypoint(nullptr);
 	LastLocation = this->GetActorLocation();
 	StuckTimer = GetWorld()->TimeSeconds;
+	CharMovement = this->FindComponentByClass<UCharacterMovementComponent>();
+
+	CharMovement->MaxWalkSpeed = WalkSpeedDefault;
 	//AIController->SetEventLocation(FVector(-1140, -1960, 80));
 	//AIController->SetTargetLocation(FVector(0));
 }
@@ -105,7 +112,6 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	if (AIController->IsEventActive() && AIController->IsTargetLocationSet())
 	{
 		bIsPatrolling = false;
-		// SET MOVMENT SPEED - HOW TO ACCESS CHARACTER MOVEMENT COMPONENT???????????????
 
 		//UE_LOG(LogTemp, Warning, TEXT("Event Active"));
 
@@ -165,6 +171,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 			if (AIController)
 			{
 				bSensedTarget = false;
+				CharMovement->MaxWalkSpeed = WalkSpeedDefault;
 				if (DebugAIText) { UE_LOG(LogTemp, Warning, TEXT("Sensed target false")); }
 
 				/* Reset */
@@ -208,6 +215,12 @@ void AEnemyCharacter::OnSeePlayer(APawn * Pawn)
 	//UE_LOG(LogTemp, Warning, TEXT("Player SEEN"));
 	AIController = Cast<AEnemyAIController>(GetController());
 
+	//AIController->SetFocus(Pawn);
+
+	// Increase speed
+
+	CharMovement->MaxWalkSpeed = WalkSpeedSensedTarget;
+
 	if (AIController->IsEventActive())
 	{
 		return;
@@ -239,6 +252,8 @@ void AEnemyCharacter::OnHearPlayer(APawn * PawnInstigator, const FVector & Locat
 	//{
 	//	BroadcastUpdateAudioLoop(true);
 	//}
+
+	CharMovement->MaxWalkSpeed = WalkSpeedSensedTarget;
 
 	AIController = Cast<AEnemyAIController>(GetController());
 
@@ -330,6 +345,7 @@ void AEnemyCharacter::CheckIfStuck()
 	if (this->GetActorLocation() == LastLocation)
 	{
 		bSensedTarget = false;
+		CharMovement->MaxWalkSpeed = WalkSpeedDefault;
 		AIController->SetTargetEnemy(nullptr);
 		if (DebugAIText) { UE_LOG(LogTemp, Error, TEXT("STUCK!!!")); }
 

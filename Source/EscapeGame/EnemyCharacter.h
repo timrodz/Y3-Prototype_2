@@ -51,11 +51,19 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 	float StuckTimer;
 //	bool StuckTimerSet;
 
+	UCharacterMovementComponent* CharMovement;
+
 	UPROPERTY(EditAnywhere, Category = "AI")
 		bool DebugAIText;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	float StuckThreshold;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+		float WalkSpeedDefault;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+		float WalkSpeedSensedTarget;
 
 	/* Time-out value to clear the sensed position of the player. Should be higher than Sense interval in the PawnSense component not never miss sense ticks. */
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
