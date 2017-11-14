@@ -30,13 +30,13 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Variables")
 		float MaxAirThreshold = 100.0f;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Variables")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables")
 		float BreathRechargeMultiplier = 20.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables")
 		float BreathDecreaseMultiplier = 35.0f;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Variables")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables")
 		float BreathResetDelay = 5.0f;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Variables")
