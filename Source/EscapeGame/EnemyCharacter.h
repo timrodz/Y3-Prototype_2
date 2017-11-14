@@ -119,6 +119,9 @@ public:
 
 	void SetPatrolPoints(bool b);
 
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "AI")
+		float TimeSinceLastSeen;
+
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		float TargetDistanceThreshold;
 
