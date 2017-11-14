@@ -46,15 +46,24 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 	bool bIsCloseToTargetLocation;
 	bool bTargetTimerSet;
 	bool bSensedTarget;
+	bool bIsPatrolling;
 	FVector LastLocation;
 	float StuckTimer;
 //	bool StuckTimerSet;
+
+	UCharacterMovementComponent* CharMovement;
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 		bool DebugAIText;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	float StuckThreshold;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+		float WalkSpeedDefault;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+		float WalkSpeedSensedTarget;
 
 	/* Time-out value to clear the sensed position of the player. Should be higher than Sense interval in the PawnSense component not never miss sense ticks. */
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
@@ -86,6 +95,12 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 		bool HasSensedTarget();
+
+	UFUNCTION(BlueprintCallable)
+		void SetSensedTargetTrue();
+
+	UFUNCTION(BlueprintCallable)
+		bool IsEnemyPatrolling();
 	
 public:
 
@@ -109,10 +124,12 @@ public:
 
 	bool IsCloseToLocation(FVector _location);
 
-	void CheckIfStuck(FVector CurrentPos, FVector LastPos);
-
+	//void CheckIfStuck(FVector CurrentPos, FVector LastPos);
 
 	void CheckIfStuck();
+
+	UFUNCTION(BlueprintCallable)
+		void MoveToLocation(FVector newLocation);
 
 	//// Zone stuff
 

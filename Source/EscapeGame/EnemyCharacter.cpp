@@ -5,6 +5,7 @@
 #include "FirstPersonCharacterController.h"
 #include "Zone.h"
 #include "Perception/PawnSensingComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 // Sets default values
@@ -44,11 +45,25 @@ AEnemyCharacter::AEnemyCharacter(const class FObjectInitializer& ObjectInitializ
 //	StuckTimerSet = false;
 	StuckThreshold = 10.0f;
 	DebugAIText = false;
+
+	WalkSpeedDefault = 150.0f;
+	WalkSpeedSensedTarget = 250.0f;
 }
 
 bool AEnemyCharacter::HasSensedTarget()
 {
 	return bSensedTarget;
+}
+
+void AEnemyCharacter::SetSensedTargetTrue()
+{
+	CharMovement->MaxWalkSpeed = WalkSpeedSensedTarget;
+	bSensedTarget = true;
+}
+
+bool AEnemyCharacter::IsEnemyPatrolling()
+{
+	return bIsPatrolling;
 }
 
 // Called when the game starts or when spawned
@@ -73,6 +88,9 @@ void AEnemyCharacter::BeginPlay()
 	AIController->SetWaypoint(nullptr);
 	LastLocation = this->GetActorLocation();
 	StuckTimer = GetWorld()->TimeSeconds;
+	CharMovement = this->FindComponentByClass<UCharacterMovementComponent>();
+
+	CharMovement->MaxWalkSpeed = WalkSpeedDefault;
 	//AIController->SetEventLocation(FVector(-1140, -1960, 80));
 	//AIController->SetTargetLocation(FVector(0));
 }
@@ -99,8 +117,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	// Check for events
 	if (AIController->IsEventActive() && AIController->IsTargetLocationSet())
 	{
-
-		// SET MOVMENT SPEED - HOW TO ACCESS CHARACTER MOVEMENT COMPONENT???????????????
+		bIsPatrolling = false;
 
 		//UE_LOG(LogTemp, Warning, TEXT("Event Active"));
 
@@ -126,6 +143,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	// Check if enemy has seen or heard anything
 	if (bSensedTarget)
 	{
+		bIsPatrolling = false;
 		//UE_LOG(LogTemp, Warning, TEXT("SENSED TARGET"));
 		//CheckIfStuck(this->GetActorLocation(), LastLocation);
 
@@ -159,6 +177,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 			if (AIController)
 			{
 				bSensedTarget = false;
+				CharMovement->MaxWalkSpeed = WalkSpeedDefault;
 				if (DebugAIText) { UE_LOG(LogTemp, Warning, TEXT("Sensed target false")); }
 
 				/* Reset */
@@ -172,6 +191,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	// Patrolling
 	if (bPatrolPointsSet && !bSensedTarget)
 	{
+		bIsPatrolling = true;
 		DebugTextRender->SetText(FText::FromString("Patrolling"));
 		AIController = Cast<AEnemyAIController>(GetController());
 		AIController->DrawDebugLineToTarget();
@@ -201,6 +221,12 @@ void AEnemyCharacter::OnSeePlayer(APawn * Pawn)
 	//UE_LOG(LogTemp, Warning, TEXT("Player SEEN"));
 	AIController = Cast<AEnemyAIController>(GetController());
 
+	//AIController->SetFocus(Pawn);
+
+	// Increase speed
+
+	SetSensedTargetTrue();
+
 	if (AIController->IsEventActive())
 	{
 		return;
@@ -208,7 +234,6 @@ void AEnemyCharacter::OnSeePlayer(APawn * Pawn)
 
 	/* Keep track of the time the player was last sensed in order to clear the target */
 	LastSeenTime = GetWorld()->GetTimeSeconds();
-	bSensedTarget = true;
 
 	AFirstPersonCharacterController* SensedPawn = Cast<AFirstPersonCharacterController>(Pawn);
 
@@ -233,6 +258,8 @@ void AEnemyCharacter::OnHearPlayer(APawn * PawnInstigator, const FVector & Locat
 	//	BroadcastUpdateAudioLoop(true);
 	//}
 
+	SetSensedTargetTrue();
+
 	AIController = Cast<AEnemyAIController>(GetController());
 
 	if (AIController->IsEventActive())
@@ -245,7 +272,6 @@ void AEnemyCharacter::OnHearPlayer(APawn * PawnInstigator, const FVector & Locat
 	float DistanceToNoise = FVector::Dist(this->GetActorLocation(), PawnInstigator->GetActorLocation());
 	//UE_LOG(LogTemp, Warning, TEXT("Distance to noise: %f"), DistanceToNoise);
 
-	bSensedTarget = true;
 	LastHeardTime = GetWorld()->GetTimeSeconds();
 
 	
@@ -323,6 +349,7 @@ void AEnemyCharacter::CheckIfStuck()
 	if (this->GetActorLocation() == LastLocation)
 	{
 		bSensedTarget = false;
+		CharMovement->MaxWalkSpeed = WalkSpeedDefault;
 		AIController->SetTargetEnemy(nullptr);
 		if (DebugAIText) { UE_LOG(LogTemp, Error, TEXT("STUCK!!!")); }
 
@@ -338,6 +365,11 @@ void AEnemyCharacter::CheckIfStuck()
 	}
 
 	LastLocation = this->GetActorLocation();
+}
+
+void AEnemyCharacter::MoveToLocation(FVector newLocation)
+{
+	this->SetActorLocation(newLocation);
 }
 
 void AEnemyCharacter::CheckForActiveZoneEvents()
