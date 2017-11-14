@@ -28,11 +28,13 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 	virtual void Possess(class APawn* InPawn) override;
 	virtual void UnPossess() override;
 
+	UPROPERTY(EditAnywhere, Category = "AI")
 	bool bShouldWander;
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 	bool bEventActive;
 
+	UPROPERTY(EditAnywhere, Category = "AI")
 	bool bTargetLocationSet;
 
 	std::vector <AEnemyWaypoint*> Waypoints;

@@ -16,6 +16,9 @@ ARoomTool::ARoomTool()
 	WallInstances = CreateDefaultSubobject<UInstancedStaticMeshComponent>(FName("WallInstance"));
 	WallInstances->AttachTo(GetRootComponent());
 
+	CornerPieceInstances = CreateDefaultSubobject<UInstancedStaticMeshComponent>(FName("CornerPieceInstance"));
+	CornerPieceInstances->AttachTo(GetRootComponent());
+
 	DoorInstances = CreateDefaultSubobject<UInstancedStaticMeshComponent>(FName("DoorInstances"));
 	DoorInstances->AttachTo(GetRootComponent());
 
@@ -201,6 +204,59 @@ void ARoomTool::AddWall()
 		WallInstances->AddInstance(transform);
 	}
 
+
+}
+
+void ARoomTool::AddCornerPieces()
+{
+	CornerPieceInstances->ClearInstances();
+	CornerPieceInstances->SetStaticMesh(CornerPieceInfo.Mesh);
+	CornerPieceInstances->SetWorldLocation(GetRootComponent()->GetRelativeTransform().GetLocation());
+
+	//FTransform transform;
+	//int index = 0;
+	//do
+	//{
+	//	transform.SetLocation(transform.GetLocation() + CornerPieceInfo.WidthVector / 2.0f);
+	//	transform.SetRotation(transform.GetRotation());
+	//	CornerPieceInstances->AddInstance(transform);
+	//	index++;
+	//} while (WallInstances->GetInstanceTransform(index, transform, true));
+
+
+	for (int i = 0; i < Width; i++)
+	{
+		FTransform transform = FTransform();
+		transform.SetLocation(WallInfo.WidthVector * i);
+		CornerPieceInstances->AddInstance(transform);
+	}
+
+
+
+	for (int i = 0; i < Length; i++)
+	{
+		FTransform transform = FTransform();
+		FRotator rotation = FRotator(0.0f, 90.0f, 0.0f);
+		transform.SetRotation(rotation.Quaternion());
+		transform.SetLocation(WallInfo.LengthVector * i + WallInfo.WidthVector * Width);
+		CornerPieceInstances->AddInstance(transform);
+	}
+
+	for (int i = Width - 1; i >= 0; i--)
+	{
+		FTransform transform = FTransform();
+		transform.SetLocation(WallInfo.LengthVector * Length + WallInfo.WidthVector * i);
+		CornerPieceInstances->AddInstance(transform);
+	}
+
+	for (int i = Length - 1; i >= 0; i--)
+	{
+		FTransform transform = FTransform();
+		FRotator rotation = FRotator(0.0f, 90.0f, 0.0f);
+		transform.SetRotation(rotation.Quaternion());
+		transform.SetLocation(WallInfo.LengthVector * i);
+		CornerPieceInstances->AddInstance(transform);
+	}
 
 }
 
