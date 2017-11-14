@@ -170,6 +170,9 @@ void ARoomTool::AddWall()
 	WallInstances->SetStaticMesh(WallInfo.Mesh);
 	WallInstances->SetWorldLocation(GetRootComponent()->GetRelativeTransform().GetLocation());
 
+	int flip = FlipWalls ? 1 : -1;
+	int flipWalls = FlipWalls ? 0 : 1;
+
 	for (int i = 0; i < Width; i++)
 	{
 		FTransform transform = FTransform();
@@ -182,25 +185,27 @@ void ARoomTool::AddWall()
 	for (int i = 0; i < Length; i++)
 	{
 		FTransform transform = FTransform();
-		FRotator rotation = FRotator(0.0f, 90.0f, 0.0f);
+		FRotator rotation = FRotator(0.0f, 90.0f * flip, 0.0f);
 		transform.SetRotation(rotation.Quaternion());
-		transform.SetLocation(WallInfo.LengthVector * i + WallInfo.WidthVector * Width);
+		transform.SetLocation(WallInfo.LengthVector * i + (WallInfo.WidthVector * Width) - ((WallInfo.LengthVector * flip) * flipWalls));
 		WallInstances->AddInstance(transform);
 	}
 
 	for (int i = Width - 1; i >= 0; i--)
 	{
 		FTransform transform = FTransform();
-		transform.SetLocation(WallInfo.LengthVector * Length + WallInfo.WidthVector * i);
+		FRotator rotation = FRotator(0.0f, (180.0f * flipWalls), 0.0f);
+		transform.SetRotation(rotation.Quaternion());
+		transform.SetLocation(WallInfo.LengthVector * Length + WallInfo.WidthVector * i - ((WallInfo.WidthVector * flip) * flipWalls));
 		WallInstances->AddInstance(transform);
 	}
 
 	for (int i = Length - 1; i >= 0; i--)
 	{
 		FTransform transform = FTransform();
-		FRotator rotation = FRotator(0.0f, 90.0f, 0.0f);
+		FRotator rotation = FRotator(0.0f, -90.0f * flip, 0.0f);
 		transform.SetRotation(rotation.Quaternion());
-		transform.SetLocation(WallInfo.LengthVector * i);
+		transform.SetLocation(WallInfo.LengthVector * i + (WallInfo.LengthVector * flip) + (WallInfo.LengthVector * flipWalls));
 		WallInstances->AddInstance(transform);
 	}
 
@@ -223,41 +228,64 @@ void ARoomTool::AddCornerPieces()
 	//	index++;
 	//} while (WallInstances->GetInstanceTransform(index, transform, true));
 
-
-	for (int i = 0; i < Width; i++)
+	if (bUseCornerPieces && !bUseCornerPieceToHideSeams)
 	{
 		FTransform transform = FTransform();
-		transform.SetLocation(WallInfo.WidthVector * i);
+		transform.SetLocation(WallInfo.WidthVector * 0);
 		CornerPieceInstances->AddInstance(transform);
-	}
 
-
-
-	for (int i = 0; i < Length; i++)
-	{
-		FTransform transform = FTransform();
 		FRotator rotation = FRotator(0.0f, 90.0f, 0.0f);
 		transform.SetRotation(rotation.Quaternion());
-		transform.SetLocation(WallInfo.LengthVector * i + WallInfo.WidthVector * Width);
+		transform.SetLocation(WallInfo.WidthVector * Width);
 		CornerPieceInstances->AddInstance(transform);
-	}
 
-	for (int i = Width - 1; i >= 0; i--)
-	{
-		FTransform transform = FTransform();
-		transform.SetLocation(WallInfo.LengthVector * Length + WallInfo.WidthVector * i);
+		transform.SetLocation(WallInfo.LengthVector * Length + WallInfo.WidthVector * Width);
 		CornerPieceInstances->AddInstance(transform);
-	}
 
-	for (int i = Length - 1; i >= 0; i--)
-	{
-		FTransform transform = FTransform();
-		FRotator rotation = FRotator(0.0f, 90.0f, 0.0f);
+		rotation = FRotator(0.0f, 90.0f, 0.0f);
 		transform.SetRotation(rotation.Quaternion());
-		transform.SetLocation(WallInfo.LengthVector * i);
+		transform.SetLocation(WallInfo.LengthVector * Length);
 		CornerPieceInstances->AddInstance(transform);
 	}
 
+	else if (bUseCornerPieceToHideSeams)
+	{
+		for (int i = 0; i < Width; i++)
+		{
+			FTransform transform = FTransform();
+			transform.SetLocation(WallInfo.WidthVector * i);
+			CornerPieceInstances->AddInstance(transform);
+		}
+
+
+
+		for (int i = 0; i < Length; i++)
+		{
+			FTransform transform = FTransform();
+			FRotator rotation = FRotator(0.0f, 90.0f, 0.0f);
+			transform.SetRotation(rotation.Quaternion());
+			transform.SetLocation(WallInfo.LengthVector * i + WallInfo.WidthVector * Width);
+			CornerPieceInstances->AddInstance(transform);
+		}
+
+		for (int i = Width - 1; i >= 0; i--)
+		{
+			FTransform transform = FTransform();
+			transform.SetLocation(WallInfo.LengthVector * Length + WallInfo.WidthVector * i);
+			CornerPieceInstances->AddInstance(transform);
+		}
+
+		for (int i = Length - 1; i >= 0; i--)
+		{
+			FTransform transform = FTransform();
+			FRotator rotation = FRotator(0.0f, 90.0f, 0.0f);
+			transform.SetRotation(rotation.Quaternion());
+			transform.SetLocation(WallInfo.LengthVector * i);
+			CornerPieceInstances->AddInstance(transform);
+		}
+
+	}
+	
 }
 
 void ARoomTool::AddDoors()

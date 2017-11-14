@@ -106,10 +106,10 @@ public:
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Instances", meta = (EditCondition = bUseCornerPieces))
 		UInstancedStaticMeshComponent* CornerPieceInstances;
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Instances", meta = (EditCondition = bUseCornerPieces))
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Settings", meta = (EditCondition = bUseCornerPieces))
 		bool bUseCornerPieceToHideSeams;
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Instances")
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Settings")
 		bool bUseCornerPieces;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Instances")
@@ -171,6 +171,9 @@ public:
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Settings|Size", meta = (ClampMin = 0))
 		int Length;
+
+	UPROPERTY(EditInstanceOnly, Category = "Settings|Size")
+		bool FlipWalls;
 
 
 	//UPROPERTY(EditDefaultsOnly, Category = "Settings|Options")
