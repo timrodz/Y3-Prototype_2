@@ -78,10 +78,16 @@ public:
 	AFirstPersonCharacterController* GetTargetEnemy();
 	void SetTargetEnemy(APawn* NewTarget);
 
+	UFUNCTION(BlueprintCallable, Category = "AI")
 	void SetWaypoint(AEnemyWaypoint* NewWaypoint);
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
+		void SetWaypointNull();
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
 	bool GetShouldWander();
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
 	void SetShouldWander(bool ShouldWander);
 
 	UFUNCTION(BlueprintCallable, Category = "AI")

@@ -27,7 +27,6 @@ AEnemyAIController::AEnemyAIController(const class FObjectInitializer& ObjectIni
 
 	/* Initializes PlayerState so we can assign a team index to AI */
 	//bWantsPlayerState = true;
-	this->OnCollisionHit.AddDynamic(this, &AEnemyAIController::OnHearNoise);
 }
 
 void AEnemyAIController::Possess(APawn * InPawn)
@@ -83,6 +82,14 @@ void AEnemyAIController::SetWaypoint(AEnemyWaypoint * NewWaypoint)
 	if (BlackboardComp)
 	{
 		BlackboardComp->SetValueAsObject(CurrentWaypointKeyName, NewWaypoint);
+	}
+}
+
+void AEnemyAIController::SetWaypointNull()
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsObject(CurrentWaypointKeyName, nullptr);
 	}
 }
 
