@@ -21,7 +21,7 @@ enum class EEnemyType : uint8
 	Other,
 };
 
-UCLASS()
+UCLASS(Blueprintable)
 class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 {
 	GENERATED_BODY()
@@ -41,13 +41,19 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 		float TimeToWaitAtTargetLocation;
 
 	/* Resets after sense time-out to avoid unnecessary clearing of target each tick */
-	
+	UPROPERTY(EditAnywhere, Category = "AI")
 	bool bPatrolPointsSet;
+	UPROPERTY(EditAnywhere, Category = "AI")
 	bool bIsCloseToTargetLocation;
+	UPROPERTY(EditAnywhere, Category = "AI")
 	bool bTargetTimerSet;
+	UPROPERTY(EditAnywhere, Category = "AI")
 	bool bSensedTarget;
+	UPROPERTY(EditAnywhere, Category = "AI")
 	bool bIsPatrolling;
+	UPROPERTY(EditAnywhere, Category = "AI")
 	FVector LastLocation;
+	UPROPERTY(EditAnywhere, Category = "AI")
 	float StuckTimer;
 //	bool StuckTimerSet;
 
@@ -118,6 +124,9 @@ public:
 	void SetEnemyType(EEnemyType NewType);
 
 	void SetPatrolPoints(bool b);
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "AI")
+		float TimeSinceLastSeen;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		float TargetDistanceThreshold;

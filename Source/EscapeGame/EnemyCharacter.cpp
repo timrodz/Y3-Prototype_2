@@ -44,6 +44,7 @@ AEnemyCharacter::AEnemyCharacter(const class FObjectInitializer& ObjectInitializ
 	StuckTimer = 0.0f;
 //	StuckTimerSet = false;
 	StuckThreshold = 10.0f;
+	TimeSinceLastSeen = 0.0f;
 	DebugAIText = false;
 
 	WalkSpeedDefault = 150.0f;
@@ -143,6 +144,9 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	// Check if enemy has seen or heard anything
 	if (bSensedTarget)
 	{
+		TimeSinceLastSeen = GetWorld()->TimeSeconds - LastSeenTime;
+		UE_LOG(LogTemp, Warning, TEXT("Time since last seen: %f"), TimeSinceLastSeen); 
+
 		bIsPatrolling = false;
 		//UE_LOG(LogTemp, Warning, TEXT("SENSED TARGET"));
 		//CheckIfStuck(this->GetActorLocation(), LastLocation);
