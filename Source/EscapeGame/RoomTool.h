@@ -145,8 +145,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Generation")
 		void ConvertToStaticMeshActors();
 
-	virtual void PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEvent);
-
 	void PostEdit_DoorLocation();
 
 public:
