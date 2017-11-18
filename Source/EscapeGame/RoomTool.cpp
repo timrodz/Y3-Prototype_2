@@ -416,27 +416,6 @@ void ARoomTool::ConvertToStaticMeshActors()
 
 }
 
-#if WITH_EDITOR
-
-void ARoomTool::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
-{
-	//Get the name of the property that was changed  
-	FName PropertyName = (PropertyChangedEvent.Property != nullptr) ? PropertyChangedEvent.Property->GetFName() : NAME_None;
-
-	// We test using GET_MEMBER_NAME_CHECKED so that if someone changes the property name  
-	// in the future this will fail to compile and we can update it.  
-	if ((PropertyName == GET_MEMBER_NAME_CHECKED(ARoomTool, DoorLocations)))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("PostEdit_DoorLocations()"));
-		PostEdit_DoorLocation();
-	}
-
-	// Call the base class version  
-	Super::PostEditChangeProperty(PropertyChangedEvent);
-}
-
-#endif
-
 
 
 
