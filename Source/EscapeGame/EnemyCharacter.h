@@ -16,9 +16,19 @@ UENUM(BlueprintType)
 enum class EEnemyType : uint8
 {
 	// For when we have more enemies
-
 	Standard,
 	Other,
+};
+
+UENUM(BlueprintType)
+enum class EEnemyMode : uint8
+{
+	WAITING,
+	SENSED,
+	CHASING,
+	INSPECTING,
+	EVENT
+
 };
 
 UCLASS(Blueprintable)
@@ -29,6 +39,9 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, Category = "AI")
 	class AEnemyAIController* AIController;
 
+	/* New Enemy enum to define what its doing atm */
+	EEnemyMode CurrentMode = EEnemyMode::WAITING;
+
 	/* Last time the player was spotted */
 	float LastSeenTime;
 
@@ -38,7 +51,23 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 	float TimeArrivedAtTarget;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
-		float TimeToWaitAtTargetLocation;
+		float TimeToWaitAtTargetLocation = 3.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sensing")
+	//Cone angle for vision 
+		float PeripheralVisionAngle = 60.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sensing")
+	//Cone radius for visual sight
+		float SightRadius = 2000;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sensing")
+	//Sounds heard at e.g 600 or less, will be at max importance
+		float HearingThreshold = 600;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sensing")
+	//Sound importance lost at distance of e.g 1200
+		float LOSHearingThreshold = 1200;
 
 	/* Resets after sense time-out to avoid unnecessary clearing of target each tick */
 	UPROPERTY(EditAnywhere, Category = "AI")
@@ -53,27 +82,38 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 	bool bIsPatrolling;
 	UPROPERTY(EditAnywhere, Category = "AI")
 	FVector LastLocation;
+
 	UPROPERTY(EditAnywhere, Category = "AI")
-	float StuckTimer;
+		float StuckTimer;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+		float ChaseRadius = 200.0f;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+		float MinimumChaseTime = 3.0f;
+	float MinimumChaseTimer = 0.0f;
+
+
 //	bool StuckTimerSet;
 
 	UCharacterMovementComponent* CharMovement;
 
+
 	UPROPERTY(EditAnywhere, Category = "AI")
-		bool DebugAIText;
+		bool DebugAIText = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	float StuckThreshold;
+		float StuckThreshold = 10.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
-		float WalkSpeedDefault;
+		float WalkSpeedDefault = 150.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
-		float WalkSpeedSensedTarget;
+		float WalkSpeedSensedTarget = 250.0f;
 
 	/* Time-out value to clear the sensed position of the player. Should be higher than Sense interval in the PawnSense component not never miss sense ticks. */
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	float SenseTimeOut;
+		float SenseTimeOut = 2.5f;
 
 	UPROPERTY(VisibleAnywhere, Category = "AI")
 		class UPawnSensingComponent* PawnSensingComp;
@@ -129,7 +169,7 @@ public:
 		float TimeSinceLastSeen;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
-		float TargetDistanceThreshold;
+		float TargetDistanceThreshold = 60.0f;
 
 	bool IsCloseToLocation(FVector _location);
 

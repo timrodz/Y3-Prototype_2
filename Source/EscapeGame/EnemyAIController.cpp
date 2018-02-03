@@ -111,10 +111,17 @@ bool AEnemyAIController::GetShouldWander()
 void AEnemyAIController::SetTargetEnemy(APawn * NewTarget)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Set target enemy called"));
-
 	if (BlackboardComp)
 	{
-		BlackboardComp->SetValueAsObject(TargetEnemyKeyName, NewTarget);
+		//Update :: Only set the sensed target if its different from before.
+		if (BlackboardComp->GetValueAsObject(TargetEnemyKeyName) == NewTarget)
+		{
+
+		}
+		else
+		{
+			BlackboardComp->SetValueAsObject(TargetEnemyKeyName, NewTarget);
+		}
 	}
 }
 
@@ -223,7 +230,7 @@ void AEnemyAIController::FindWaypoint()
 	}
 	else // No waypoints in map
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Waypoint NOT set"));
+		//UE_LOG(LogTemp, Warning, TEXT("Waypoint NOT set"));
 
 		Cast<AEnemyCharacter>(GetPawn())->SetPatrolPoints(false);
 
