@@ -20,16 +20,7 @@ enum class EEnemyType : uint8
 	Other,
 };
 
-UENUM(BlueprintType)
-enum class EEnemyMode : uint8
-{
-	WAITING,
-	SENSED,
-	CHASING,
-	INSPECTING,
-	EVENT
 
-};
 
 UCLASS(Blueprintable)
 class ESCAPEGAME_API AEnemyCharacter : public ACharacter
@@ -38,9 +29,6 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 	class AEnemyAIController* AIController;
-
-	/* New Enemy enum to define what its doing atm */
-	EEnemyMode CurrentMode = EEnemyMode::WAITING;
 
 	/* Last time the player was spotted */
 	float LastSeenTime;
@@ -76,10 +64,7 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 	bool bIsCloseToTargetLocation;
 	UPROPERTY(EditAnywhere, Category = "AI")
 	bool bTargetTimerSet;
-	UPROPERTY(EditAnywhere, Category = "AI")
-	bool bSensedTarget;
-	UPROPERTY(EditAnywhere, Category = "AI")
-	bool bIsPatrolling;
+
 	UPROPERTY(EditAnywhere, Category = "AI")
 	FVector LastLocation;
 
@@ -90,11 +75,11 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 		float ChaseRadius = 200.0f;
 
 	UPROPERTY(EditAnywhere, Category = "AI")
-		float MinimumChaseTime = 3.0f;
-	float MinimumChaseTimer = 0.0f;
+		float MinChaseTime = 3.0f;
 
-
-//	bool StuckTimerSet;
+	UPROPERTY(EditAnywhere, Category = "AI")
+		//Time spent chasing since unseen
+		float UnseenChaseTime = 1.0f;
 
 	UCharacterMovementComponent* CharMovement;
 

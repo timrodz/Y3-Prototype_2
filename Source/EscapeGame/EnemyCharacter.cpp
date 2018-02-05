@@ -14,7 +14,6 @@ AEnemyCharacter::AEnemyCharacter(const class FObjectInitializer& ObjectInitializ
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	bSensedTarget = false;
 	bPatrolPointsSet = false;
 	bIsCloseToTargetLocation = false;
 	bTargetTimerSet = false;
@@ -41,23 +40,26 @@ AEnemyCharacter::AEnemyCharacter(const class FObjectInitializer& ObjectInitializ
 
 	StuckTimer = 0.0f;
 	TimeSinceLastSeen = 0.0f;
-
 }
 
 bool AEnemyCharacter::HasSensedTarget()
 {
-	return bSensedTarget;
+	if (AIController)
+		return AIController->CurrentMode == EEnemyAIMode::SENSED;
+	else
+		return false;
 }
 
 void AEnemyCharacter::SetSensedTargetTrue()
 {
 	CharMovement->MaxWalkSpeed = WalkSpeedSensedTarget;
-	bSensedTarget = true;
+
+	AIController->CurrentMode = EEnemyAIMode::SENSED;
 }
 
 bool AEnemyCharacter::IsEnemyPatrolling()
 {
-	return bIsPatrolling;
+	return AIController->CurrentMode == EEnemyAIMode::WANDER;
 }
 
 // Called when the game starts or when spawned
@@ -85,8 +87,6 @@ void AEnemyCharacter::BeginPlay()
 	CharMovement = this->FindComponentByClass<UCharacterMovementComponent>();
 
 	CharMovement->MaxWalkSpeed = WalkSpeedDefault;
-	//AIController->SetEventLocation(FVector(-1140, -1960, 80));
-	//AIController->SetTargetLocation(FVector(0));
 }
 
 // Called every frame
@@ -105,7 +105,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	// Check for events
 	if (AIController->IsEventActive() && AIController->IsTargetLocationSet())
 	{
-		bIsPatrolling = false;
+		//bIsPatrolling = false;
 
 		DebugTextRender->SetText(FText::FromString("Event"));
 
@@ -114,49 +114,45 @@ void AEnemyCharacter::Tick(float DeltaTime)
 			//AIController->SetEventActive(false);			
 		}
 
-	//	return;	
-	//}
-
-	//AIController = Cast<AEnemyAIController>(GetController());
+		return;	
+	}
 
 	FVector TargetLoc = AIController->GetTheTargetLocation();
 	bIsCloseToTargetLocation = IsCloseToLocation(TargetLoc);
 
-	//MinimumChaseTimer += DeltaTime;
-	//if (bSensedTarget && MinimumChaseTimer < MinimumChaseTime)
-	//{
-	//	return;
-	//}
-	//else
-	//{
-
-	//}
 
 	// Check if enemy has seen or heard anything
-	//if (bSensedTarget)
-	//{
-	//	TimeSinceLastSeen = WorldTime - LastSeenTime;
-	//	//UE_LOG(LogTemp, Warning, TEXT("Time since last seen: %f"), TimeSinceLastSeen); 
+	if (AIController->CurrentMode == EEnemyAIMode::SENSED)
+	{
+		TimeSinceLastSeen = WorldTime - LastSeenTime;
 
-	//	bIsPatrolling = false;
-	//	//UE_LOG(LogTemp, Warning, TEXT("SENSED TARGET"));
-	//	//CheckIfStuck(this->GetActorLocation(), LastLocation);
+		//bIsPatrolling = false;
 
-	//	if (bIsCloseToTargetLocation && !bTargetTimerSet)
-	//	{
-	//		TimeArrivedAtTarget = WorldTime;
-	//		bTargetTimerSet = true;
-	//		if (DebugAIText) { UE_LOG(LogTemp, Warning, TEXT("At Target Timer Started")); }
-	//	}
-	//	else if (!bIsCloseToTargetLocation)
-	//	{
-	//		bTargetTimerSet = false;
-	//		TimeArrivedAtTarget = 0.0f;
-	//	}
-	//}
+		//if (bIsCloseToTargetLocation && !bTargetTimerSet)
+		//{
+		//	TimeArrivedAtTarget = WorldTime;
+		//	bTargetTimerSet = true;
+		//	if (DebugAIText) { UE_LOG(LogTemp, Warning, TEXT("At Target Timer Started")); }
+		//}
 
+		//else if (!bIsCloseToTargetLocation)
+		//{
+		//	bTargetTimerSet = false;
+		//	TimeArrivedAtTarget = 0.0f;
+		//}
 
-	//Check time spent near target location, abort if longer than TimeToWait
+		if (TimeSinceLastSeen >= UnseenChaseTime)
+		{
+			//bSensedTarget = false;
+			CharMovement->MaxWalkSpeed = WalkSpeedDefault;
+			AIController->SetTargetLocation(AIController->GetTargetEnemy()->GetActorLocation());
+			AIController->SetTargetEnemy(nullptr);
+
+			AIController->CurrentMode = EEnemyAIMode::LAST_KNOWN_LOCATION;
+		}
+	}
+
+	////Check time spent near target location, abort if longer than TimeToWait
 	//if (bIsCloseToTargetLocation)
 	//{
 	//	float Time = WorldTime - TimeArrivedAtTarget;
@@ -181,7 +177,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	//}
 
 
-	// Patrolling
+	//// Patrolling
 	//if (bPatrolPointsSet && !bSensedTarget)
 	//{
 	//	bIsPatrolling = true;
@@ -193,55 +189,45 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	//		AIController->DrawDebugLineToTarget();
 	//	}	
 	//}
-	// Waiting
-	//else if(!bPatrolPointsSet && !bSensedTarget)
+
+	//else if (!bPatrolPointsSet && !bSensedTarget)
 	//{
-	//	DebugTextRender->SetText(FText::FromString("Wait"));
+
 	//}
-	//UE_LOG(LogTemp, Warning, TEXT("End of Tick: %s"), *this->GetActorLocation().ToString());
 
 	LastLocation = this->GetActorLocation();
 }
 
 void AEnemyCharacter::OnSeePlayer(APawn * Pawn)
 {
-	/*if (!IsAlive())
-	{
-		return;
-	}*/
 
 	//if (!bSensedTarget)
 	//{
 	//	//BroadcastUpdateAudioLoop(true);
 	//}
 
-	//UE_LOG(LogTemp, Warning, TEXT("Player SEEN"));
 	AIController = Cast<AEnemyAIController>(GetController());
-
-	//AIController->SetFocus(Pawn);
-
-	// Increase speed
-
-	SetSensedTargetTrue();
 
 	if (AIController->IsEventActive())
 	{
 		return;
 	}
 
-	/* Keep track of the time the player was last sensed in order to clear the target */
-	LastSeenTime = GetWorld()->GetTimeSeconds();
 
 	AFirstPersonCharacterController* SensedPawn = Cast<AFirstPersonCharacterController>(Pawn);
-
-	if (AIController)// && SensedPawn->IsAlive())
+	if (SensedPawn)
 	{
-		AIController->SetTargetEnemy(SensedPawn);
+		if (AIController)// && SensedPawn->IsAlive())
+		{
+			AIController->SetTargetLocation(SensedPawn->GetActorLocation());
+			AIController->SetTargetEnemy(SensedPawn);
 
-		AIController->SetTargetLocation(SensedPawn->GetActorLocation());
+			SetSensedTargetTrue();
 
-		DebugTextRender->SetText(FText::FromString("Chasing-Seen"));
-		if (DebugAIText) { UE_LOG(LogTemp, Error, TEXT("Set target location - seen")); }
+			/* Keep track of the time the player was last sensed in order to clear the target */
+			LastSeenTime = GetWorld()->GetTimeSeconds();
+
+		}
 	}
 }
 
@@ -279,8 +265,8 @@ void AEnemyCharacter::OnHearPlayer(APawn * PawnInstigator, const FVector & Locat
 
 	if (AIController)
 	{
-		AIController->SetTargetEnemy(PawnInstigator);
 		AIController->SetTargetLocation(PawnInstigator->GetActorLocation());
+		AIController->SetTargetEnemy(PawnInstigator);
 		//AIController->SetTargetLocation(PawnInstigator->GetActorLocation()); //  change to some kind of delay??? Watch vids etc
 		if (DebugAIText) { UE_LOG(LogTemp, Error, TEXT("Set target location - heard")); }
 		DebugTextRender->SetText(FText::FromString("Chasing-Heard"));
@@ -347,8 +333,10 @@ void AEnemyCharacter::CheckIfStuck()
 
 	if (this->GetActorLocation() == LastLocation)
 	{
-		bSensedTarget = false;
 		CharMovement->MaxWalkSpeed = WalkSpeedDefault;
+
+		AIController->CurrentMode = EEnemyAIMode::WANDER;
+
 		AIController->SetTargetEnemy(nullptr);
 		if (DebugAIText) { UE_LOG(LogTemp, Error, TEXT("STUCK!!!")); }
 

@@ -17,6 +17,17 @@
 
 #include "EnemyAIController.generated.h"
 
+UENUM(BlueprintType)
+enum class EEnemyAIMode : uint8
+{
+	WAITING,
+	SENSED,
+	CHASING,
+	LAST_KNOWN_LOCATION,
+	EVENT,
+	WANDER
+};
+
 UCLASS()
 class ESCAPEGAME_API AEnemyAIController : public AAIController
 {
@@ -28,14 +39,12 @@ class ESCAPEGAME_API AEnemyAIController : public AAIController
 	virtual void Possess(class APawn* InPawn) override;
 	virtual void UnPossess() override;
 
+public:
+	/* New Enemy enum to define what its doing atm */
 	UPROPERTY(EditAnywhere, Category = "AI")
-	bool bShouldWander;
+		EEnemyAIMode CurrentMode;
 
-	UPROPERTY(EditAnywhere, Category = "AI")
-	bool bEventActive;
-
-	UPROPERTY(EditAnywhere, Category = "AI")
-	bool bTargetLocationSet;
+private:
 
 	std::vector <AEnemyWaypoint*> Waypoints;
 	AEnemyWaypoint* DebugWaypoint;
@@ -81,28 +90,36 @@ public:
 	void SetTargetEnemy(APawn* NewTarget);
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
-	void SetWaypoint(AEnemyWaypoint* NewWaypoint);
+		void SetWaypoint(AEnemyWaypoint* NewWaypoint);
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 		void SetWaypointNull();
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
-	bool GetShouldWander();
+		bool GetShouldWander();
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
-	void SetShouldWander(bool ShouldWander);
+		void SetShouldWander(bool ShouldWander);
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
-	void SetEventLocation(FVector location);
+		void SetEventLocation(FVector location);
+
 	UFUNCTION(BlueprintCallable, Category = "AI")
-	FVector GetEventLocation();
+		FVector GetEventLocation();
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+		bool IsEventActive();
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+		void SetEventActive(bool _b);
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+		void SetInvestigateLastKnownLocation();
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+		bool GetIsInvestigatingLastKnownLocation();
 
 	void SetBlackboardEnemyType(EEnemyType NewType);
-
-	UFUNCTION(BlueprintCallable, Category = "AI")
-	bool IsEventActive();
-	UFUNCTION(BlueprintCallable, Category = "AI")
-	void SetEventActive(bool _b);
 
 	void DrawDebugLineToTarget();
 

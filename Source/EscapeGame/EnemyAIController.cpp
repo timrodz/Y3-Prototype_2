@@ -23,7 +23,7 @@ AEnemyAIController::AEnemyAIController(const class FObjectInitializer& ObjectIni
 	EventLocationKeyName = "EventLocation";
 
 	DebugWaypoint = nullptr;
-	bEventActive = false;
+	CurrentMode = EEnemyAIMode::WAITING;
 
 	/* Initializes PlayerState so we can assign a team index to AI */
 	//bWantsPlayerState = true;
@@ -95,17 +95,17 @@ void AEnemyAIController::SetWaypointNull()
 
 void AEnemyAIController::SetShouldWander(bool ShouldWander)
 {
-	bShouldWander = ShouldWander;
+	CurrentMode = EEnemyAIMode::WANDER;
 }
 
 bool AEnemyAIController::IsTargetLocationSet()
 {
-	return bTargetLocationSet;
+	return CurrentMode == EEnemyAIMode::LAST_KNOWN_LOCATION;
 }
 
 bool AEnemyAIController::GetShouldWander()
 {
-	return bShouldWander;
+	return CurrentMode == EEnemyAIMode::WANDER;
 }
 
 void AEnemyAIController::SetTargetEnemy(APawn * NewTarget)
@@ -113,15 +113,7 @@ void AEnemyAIController::SetTargetEnemy(APawn * NewTarget)
 	//UE_LOG(LogTemp, Warning, TEXT("Set target enemy called"));
 	if (BlackboardComp)
 	{
-		//Update :: Only set the sensed target if its different from before.
-		if (BlackboardComp->GetValueAsObject(TargetEnemyKeyName) == NewTarget)
-		{
-
-		}
-		else
-		{
-			BlackboardComp->SetValueAsObject(TargetEnemyKeyName, NewTarget);
-		}
+		BlackboardComp->SetValueAsObject(TargetEnemyKeyName, NewTarget);
 	}
 }
 
@@ -131,7 +123,7 @@ void AEnemyAIController::SetTargetLocation(FVector location)
 	{
 		//UE_LOG(LogTemp, Error, TEXT("Setting target location"));
 		BlackboardComp->SetValueAsVector(TargetLocationKeyName, location);
-		bTargetLocationSet = true;
+		CurrentMode = EEnemyAIMode::LAST_KNOWN_LOCATION;
 	}
 }
 
@@ -165,6 +157,11 @@ FVector AEnemyAIController::GetEventLocation()
 	return FVector(0, 0, 0);
 }
 
+bool AEnemyAIController::GetIsInvestigatingLastKnownLocation()
+{
+	return CurrentMode == EEnemyAIMode::LAST_KNOWN_LOCATION;
+}
+
 void AEnemyAIController::SetBlackboardEnemyType(EEnemyType NewType)
 {
 	if (BlackboardComp)
@@ -175,12 +172,20 @@ void AEnemyAIController::SetBlackboardEnemyType(EEnemyType NewType)
 
 bool AEnemyAIController::IsEventActive()
 {
-	return bEventActive;
+	return CurrentMode == EEnemyAIMode::EVENT;
 }
 
 void AEnemyAIController::SetEventActive(bool _b)
 {
-	bEventActive = _b;
+	if (_b)
+		CurrentMode = EEnemyAIMode::EVENT;
+	else
+		CurrentMode = EEnemyAIMode::WAITING;
+}
+
+void AEnemyAIController::SetInvestigateLastKnownLocation()
+{
+	CurrentMode = EEnemyAIMode::LAST_KNOWN_LOCATION;
 }
 
 void AEnemyAIController::DrawDebugLineToTarget()
