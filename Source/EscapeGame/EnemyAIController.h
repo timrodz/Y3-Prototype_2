@@ -21,7 +21,8 @@ UENUM(BlueprintType)
 enum class EEnemyAIMode : uint8
 {
 	WAITING,
-	SENSED,
+	SEEN,
+	HEARD_NOISE,
 	CHASING,
 	LAST_KNOWN_LOCATION,
 	EVENT,
@@ -94,6 +95,13 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 		void SetWaypointNull();
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+		bool GetHasHeardNoise();
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+		void SetHeardNoiseLocation(FVector location);
+
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 		bool GetShouldWander();

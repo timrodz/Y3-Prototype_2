@@ -94,9 +94,9 @@ class ESCAPEGAME_API AEnemyCharacter : public ACharacter
 		float WalkSpeedDefault = 150.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
-		float WalkSpeedSensedTarget = 250.0f;
+		float WalkSpeedSeenTarget = 250.0f;
 
-	/* Time-out value to clear the sensed position of the player. Should be higher than Sense interval in the PawnSense component not never miss sense ticks. */
+	/* Time-out value to clear the Seen position of the player. Should be higher than Sense interval in the PawnSense component not never miss sense ticks. */
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		float SenseTimeOut = 2.5f;
 
@@ -124,11 +124,17 @@ protected:
 	UFUNCTION()
 		void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
-	UFUNCTION(BlueprintCallable)
-		bool HasSensedTarget();
+
 
 	UFUNCTION(BlueprintCallable)
-		void SetSensedTargetTrue();
+		bool HasSeenTarget();
+
+	UFUNCTION(BlueprintCallable)
+		void SetSeenTargetTrue();
+
+	UFUNCTION(BlueprintCallable)
+		bool HasHeardTarget();
+
 
 	UFUNCTION(BlueprintCallable)
 		bool IsEnemyPatrolling();

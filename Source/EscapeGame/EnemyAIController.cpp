@@ -183,6 +183,12 @@ void AEnemyAIController::SetEventActive(bool _b)
 		CurrentMode = EEnemyAIMode::WAITING;
 }
 
+
+bool AEnemyAIController::GetHasHeardNoise()
+{
+	return CurrentMode == EEnemyAIMode::HEARD_NOISE;
+}
+
 void AEnemyAIController::SetInvestigateLastKnownLocation()
 {
 	CurrentMode = EEnemyAIMode::LAST_KNOWN_LOCATION;
@@ -249,3 +255,14 @@ void AEnemyAIController::OnHearNoise(FVector location)
 	UE_LOG(LogTemp, Warning, TEXT("AI CONTROLLER - OnHearNoise"));
 	//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, "HEAR NOISE");
 }
+
+void AEnemyAIController::SetHeardNoiseLocation(FVector location)
+{
+	if (BlackboardComp)
+	{
+		//UE_LOG(LogTemp, Error, TEXT("Setting target location"));
+		BlackboardComp->SetValueAsVector(TargetLocationKeyName, location);
+		CurrentMode = EEnemyAIMode::HEARD_NOISE;
+	}
+}
+
