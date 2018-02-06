@@ -252,7 +252,7 @@ void AEnemyAIController::FindWaypoint()
 
 void AEnemyAIController::OnHearNoise(FVector location)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AI CONTROLLER - OnHearNoise"));
+	//UE_LOG(LogTemp, Warning, TEXT("AI CONTROLLER - OnHearNoise"));
 	//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, "HEAR NOISE");
 }
 
@@ -263,6 +263,7 @@ void AEnemyAIController::SetHeardNoiseLocation(FVector location)
 		//UE_LOG(LogTemp, Error, TEXT("Setting target location"));
 		BlackboardComp->SetValueAsVector(TargetLocationKeyName, location);
 		CurrentMode = EEnemyAIMode::HEARD_NOISE;
+		UE_LOG(LogTemp, Warning, TEXT("AI CONTROLLER - OnHearNoise setting location"));
 	}
 }
 

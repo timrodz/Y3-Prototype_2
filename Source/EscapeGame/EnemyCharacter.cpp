@@ -87,6 +87,7 @@ void AEnemyCharacter::BeginPlay()
 	this->OnActorHit.AddDynamic(this, &AEnemyCharacter::OnHit);
 	//this->OnCollisionHit.AddDynamic(this, &AInteractableObject::OnCreateNoise);
 
+	MakeNoise(1.0f);
 	DebugTextRender = this->FindComponentByClass<UTextRenderComponent>();
 	AIController = Cast<AEnemyAIController>(GetController());
 	AIController->SetShouldWander(true);
@@ -242,6 +243,9 @@ void AEnemyCharacter::OnSeePlayer(APawn * Pawn)
 
 void AEnemyCharacter::OnHearPlayer(APawn * PawnInstigator, const FVector & Location, float Volume)
 {
+
+
+	UE_LOG(LogTemp, Warning, TEXT("Player Loc: %s		vs			Location: %s"), *PawnInstigator->GetActorLocation().ToString(), *Location.ToString())
 	//if (!IsAlive())
 	//{
 	//	return;
@@ -260,9 +264,9 @@ void AEnemyCharacter::OnHearPlayer(APawn * PawnInstigator, const FVector & Locat
 		return;
 	}
 
-	if (DebugAIText) { UE_LOG(LogTemp, Warning, TEXT("HEARD Noise")); }
+	//if (DebugAIText) { UE_LOG(LogTemp, Warning, TEXT("HEARD Noise")); }
 
-	float DistanceToNoise = FVector::Dist(this->GetActorLocation(), PawnInstigator->GetActorLocation());
+	float DistanceToNoise = FVector::Dist(this->GetActorLocation(), Location);
 	//UE_LOG(LogTemp, Warning, TEXT("Distance to noise: %f"), DistanceToNoise);
 
 	LastHeardTime = GetWorld()->GetTimeSeconds();
@@ -273,16 +277,17 @@ void AEnemyCharacter::OnHearPlayer(APawn * PawnInstigator, const FVector & Locat
 
 	if (AIController)
 	{
-		AIController->SetHeardNoiseLocation(PawnInstigator->GetActorLocation());
+		AIController->SetHeardNoiseLocation(Location);
+		AIController->SetTargetEnemy(nullptr);
 		//AIController->SetTargetEnemy(PawnInstigator);
 		//AIController->SetTargetLocation(PawnInstigator->GetActorLocation()); //  change to some kind of delay??? Watch vids etc
-		if (DebugAIText) { UE_LOG(LogTemp, Error, TEXT("Set target location - heard")); }
-		DebugTextRender->SetText(FText::FromString("Chasing-Heard"));
+		//if (DebugAIText) { UE_LOG(LogTemp, Error, TEXT("Set target location - heard")); }
+		//DebugTextRender->SetText(FText::FromString("Chasing-Heard"));
 	}
 
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("Hear player AI controller cast failed"));
+		//UE_LOG(LogTemp, Error, TEXT("Hear player AI controller cast failed"));
 	}
 }
 
