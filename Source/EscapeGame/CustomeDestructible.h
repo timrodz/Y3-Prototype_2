@@ -22,6 +22,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Physics")
 		void CustomHit();
 
+	UFUNCTION(BlueprintImplementableEvent)
+		void Respawn();
+
 	UPROPERTY(BlueprintReadWrite, Category = "Spawn")
 		bool bNeedsRespawning = false;
 

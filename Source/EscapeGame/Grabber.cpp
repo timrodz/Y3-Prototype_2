@@ -38,7 +38,7 @@ void UGrabber::SetupInputComponent()
 	if (InputComponent)
 	{
 		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
-		InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
+		//InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
 	}
 	else
 	{
@@ -71,9 +71,11 @@ void UGrabber::Grab() {
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("An actor was hit by the Grabber::GetFirstPhysicsBodyInReach()"))
 
-		if (!PhysicsHandle) { 
+		//if (!PhysicsHandle) { // OLD
+		if (PhysicsHandle->GrabbedComponent != nullptr) { // <- NEW
 			//UE_LOG(LogTemp, Warning, TEXT("But there was no Physics Handle"))
-				return;
+			Release();
+			return;
 		}
 
 		//UE_LOG(LogTemp, Warning, TEXT("And the component has been grabbed"))
