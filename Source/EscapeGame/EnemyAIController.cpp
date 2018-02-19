@@ -23,7 +23,7 @@ AEnemyAIController::AEnemyAIController(const class FObjectInitializer& ObjectIni
 	EventLocationKeyName = "EventLocation";
 
 	DebugWaypoint = nullptr;
-	bEventActive = false;
+	CurrentMode = EEnemyAIMode::WAITING;
 
 	/* Initializes PlayerState so we can assign a team index to AI */
 	//bWantsPlayerState = true;
@@ -95,23 +95,22 @@ void AEnemyAIController::SetWaypointNull()
 
 void AEnemyAIController::SetShouldWander(bool ShouldWander)
 {
-	bShouldWander = ShouldWander;
+	CurrentMode = EEnemyAIMode::WANDER;
 }
 
 bool AEnemyAIController::IsTargetLocationSet()
 {
-	return bTargetLocationSet;
+	return CurrentMode == EEnemyAIMode::LAST_KNOWN_LOCATION;
 }
 
 bool AEnemyAIController::GetShouldWander()
 {
-	return bShouldWander;
+	return CurrentMode == EEnemyAIMode::WANDER;
 }
 
 void AEnemyAIController::SetTargetEnemy(APawn * NewTarget)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Set target enemy called"));
-
 	if (BlackboardComp)
 	{
 		BlackboardComp->SetValueAsObject(TargetEnemyKeyName, NewTarget);
@@ -124,7 +123,7 @@ void AEnemyAIController::SetTargetLocation(FVector location)
 	{
 		//UE_LOG(LogTemp, Error, TEXT("Setting target location"));
 		BlackboardComp->SetValueAsVector(TargetLocationKeyName, location);
-		bTargetLocationSet = true;
+		CurrentMode = EEnemyAIMode::LAST_KNOWN_LOCATION;
 	}
 }
 
@@ -158,6 +157,11 @@ FVector AEnemyAIController::GetEventLocation()
 	return FVector(0, 0, 0);
 }
 
+bool AEnemyAIController::GetIsInvestigatingLastKnownLocation()
+{
+	return CurrentMode == EEnemyAIMode::LAST_KNOWN_LOCATION;
+}
+
 void AEnemyAIController::SetBlackboardEnemyType(EEnemyType NewType)
 {
 	if (BlackboardComp)
@@ -168,12 +172,26 @@ void AEnemyAIController::SetBlackboardEnemyType(EEnemyType NewType)
 
 bool AEnemyAIController::IsEventActive()
 {
-	return bEventActive;
+	return CurrentMode == EEnemyAIMode::EVENT;
 }
 
 void AEnemyAIController::SetEventActive(bool _b)
 {
-	bEventActive = _b;
+	if (_b)
+		CurrentMode = EEnemyAIMode::EVENT;
+	else
+		CurrentMode = EEnemyAIMode::WAITING;
+}
+
+
+bool AEnemyAIController::GetHasHeardNoise()
+{
+	return CurrentMode == EEnemyAIMode::HEARD_NOISE;
+}
+
+void AEnemyAIController::SetInvestigateLastKnownLocation()
+{
+	CurrentMode = EEnemyAIMode::LAST_KNOWN_LOCATION;
 }
 
 void AEnemyAIController::DrawDebugLineToTarget()
@@ -223,7 +241,7 @@ void AEnemyAIController::FindWaypoint()
 	}
 	else // No waypoints in map
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Waypoint NOT set"));
+		//UE_LOG(LogTemp, Warning, TEXT("Waypoint NOT set"));
 
 		Cast<AEnemyCharacter>(GetPawn())->SetPatrolPoints(false);
 
@@ -234,6 +252,18 @@ void AEnemyAIController::FindWaypoint()
 
 void AEnemyAIController::OnHearNoise(FVector location)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AI CONTROLLER - OnHearNoise"));
+	//UE_LOG(LogTemp, Warning, TEXT("AI CONTROLLER - OnHearNoise"));
 	//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, "HEAR NOISE");
 }
+
+void AEnemyAIController::SetHeardNoiseLocation(FVector location)
+{
+	if (BlackboardComp)
+	{
+		//UE_LOG(LogTemp, Error, TEXT("Setting target location"));
+		BlackboardComp->SetValueAsVector(TargetLocationKeyName, location);
+		CurrentMode = EEnemyAIMode::HEARD_NOISE;
+		UE_LOG(LogTemp, Warning, TEXT("AI CONTROLLER - OnHearNoise setting location"));
+	}
+}
+
