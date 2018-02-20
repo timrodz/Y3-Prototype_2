@@ -149,6 +149,7 @@ void ACustomeDestructible::TickReconstruction(float deltaTime)
 
 
 		bNeedsRespawning = true;
+		Respawn();
 		UE_LOG(LogTemp, Warning, TEXT("NeedsRespawning"))
 
 	}
