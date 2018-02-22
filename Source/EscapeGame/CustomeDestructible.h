@@ -65,6 +65,9 @@ public:
 	UPROPERTY(EditInstanceOnly)
 		TArray<FTransform> ReconstructTransforms;
 
+	UPROPERTY(BlueprintReadOnly)
+		TArray<FName> SocketNames;
+
 	UPROPERTY(EditInstanceOnly)
 		FTimerHandle CustomHitDelay;
 	UPROPERTY(EditInstanceOnly)

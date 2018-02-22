@@ -24,7 +24,7 @@ void ACustomeDestructible::CustomHit()
 
 	UDestructibleComponent* Destructible = GetDestructibleComponent();
 
-	TArray<FName> SocketNames = Destructible->GetAllSocketNames();
+	SocketNames = Destructible->GetAllSocketNames();
 
 	for (int i = 0; i < SocketNames.Num(); i++)
 	{
@@ -64,7 +64,7 @@ void ACustomeDestructible::BeginReconstruction()
 	Destructible->SetEnableGravity(false);
 	Destructible->SetSimulatePhysics(false);
 
-	TArray<FName> SocketNames = Destructible->GetAllSocketNames();
+	//SocketNames = Destructible->GetAllSocketNames();
 
 	for (int i = 0; i < SocketNames.Num(); i++)
 	{
@@ -103,11 +103,11 @@ void ACustomeDestructible::TickReconstruction(float deltaTime)
 		else
 		{
 			UDestructibleComponent* Destructible = GetDestructibleComponent();
-			TArray<FName> Names = Destructible->GetAllSocketNames();
+			
 
-			for (int i = 0; i < Names.Num(); i++)
+			for (int i = 0; i < SocketNames.Num(); i++)
 			{
-				int32 boneInd = Destructible->GetBoneIndex(Names[i]);
+				int32 boneInd = Destructible->GetBoneIndex(SocketNames[i]);
 				int32 chunkInd = Destructible->BoneIdxToChunkIdx(boneInd);
 
 				//The translation we want;
@@ -115,7 +115,7 @@ void ACustomeDestructible::TickReconstruction(float deltaTime)
 				FVector OPosition = OriginTransforms[i].GetLocation();
 
 				//The current translations
-				FTransform CurrentTransform = Destructible->GetSocketTransform(Names[i]);
+				FTransform CurrentTransform = Destructible->GetSocketTransform(SocketNames[i]);
 
 				FQuat CRotation = ReconstructTransforms[i].GetRotation();
 				FVector CPosition = ReconstructTransforms[i].GetLocation();
