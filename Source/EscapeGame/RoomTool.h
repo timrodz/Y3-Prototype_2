@@ -103,6 +103,15 @@ public:
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Instances")
 		UInstancedStaticMeshComponent* WallInstances;
 
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Instances", meta = (EditCondition = bUseCornerPieces))
+		UInstancedStaticMeshComponent* CornerPieceInstances;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Settings", meta = (EditCondition = bUseCornerPieces))
+		bool bUseCornerPieceToHideSeams;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Settings")
+		bool bUseCornerPieces;
+
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Instances")
 		UInstancedStaticMeshComponent* ExtentionDoorInstances;
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "Instances")
@@ -131,9 +140,10 @@ public:
 		void AddExtentions();
 
 	UFUNCTION(BlueprintCallable, Category = "Generation")
-		void ConvertToStaticMeshActors();
+		void AddCornerPieces();
 
-	virtual void PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEvent);
+	UFUNCTION(BlueprintCallable, Category = "Generation")
+		void ConvertToStaticMeshActors();
 
 	void PostEdit_DoorLocation();
 
@@ -151,11 +161,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings|Meshes")
 		FMeshInfo WallInfo;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings|Meshes")
+		FMeshInfo CornerPieceInfo;
+
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Settings|Size", meta = (ClampMin = 0))
 		int Width;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Settings|Size", meta = (ClampMin = 0))
 		int Length;
+
+	UPROPERTY(EditInstanceOnly, Category = "Settings|Size")
+		bool FlipWalls;
 
 
 	//UPROPERTY(EditDefaultsOnly, Category = "Settings|Options")
