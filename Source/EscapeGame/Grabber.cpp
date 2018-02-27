@@ -79,11 +79,10 @@ void UGrabber::Grab() {
 		}
 
 		//UE_LOG(LogTemp, Warning, TEXT("And the component has been grabbed"))
-
 		PhysicsHandle->GrabComponent(
 			ComponentToGrab,
 			NAME_None, // no bones needed
-			ComponentToGrab->GetOwner()->GetActorLocation(),
+			ComponentToGrab->GetComponentLocation(),
 			true // allow rotation
 		);
 	}
