@@ -11,6 +11,7 @@
 
 class ATrackedObject;
 class AEnemyCharacter;
+class AFirstPersonCharacterController;
 
 USTRUCT()
 struct FItemStruct
@@ -35,9 +36,11 @@ class ESCAPEGAME_API AZone : public AActor
 
 	bool HasItemToCheck;
 	bool EnemyInZone;
+	bool PlayerInZone;
 	FVector ItemLocation;
 
 	AEnemyCharacter* EnemyRef;
+	AFirstPersonCharacterController* PlayerRef;
 
 	ATrackedObject* CurrentTarget;
 
@@ -64,7 +67,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void UpdateZoneItems();
 
+
+	UFUNCTION(BlueprintCallable)
 	bool IsEnemyInZone();
+
+	UFUNCTION(BlueprintCallable)
+	bool IsPlayerInZone();
 
 	bool GetHasItemToCheck();
 	void SetHasItemToCheck(bool _b);
