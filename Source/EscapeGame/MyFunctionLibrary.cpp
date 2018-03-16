@@ -18,3 +18,4 @@ AActor* UMyFunctionLibrary::SpawnActorCopy(AActor* ref, F_BP_ActorSpawnParameter
 
 	return world->SpawnActor(ref->GetClass(), transform, spawnparam);
 }
+
