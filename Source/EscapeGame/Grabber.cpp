@@ -38,7 +38,7 @@ void UGrabber::SetupInputComponent()
 	if (InputComponent)
 	{
 		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
-		InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
+		//InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
 	}
 	else
 	{
@@ -61,6 +61,13 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 }
 
 void UGrabber::Grab() {
+
+	//if (!PhysicsHandle) { // OLD
+	if (PhysicsHandle->GrabbedComponent != nullptr) { // <- NEW
+													  //UE_LOG(LogTemp, Warning, TEXT("But there was no Physics Handle"))
+		Release();
+		return;
+	}
 	/// LINE TRACE and see if we reach any actors with physics body collision channel set
 	auto HitResult = GetFirstPhysicsBodyInReach();
 	auto ComponentToGrab = HitResult.GetComponent(); // gets the mesh in our case
@@ -71,17 +78,13 @@ void UGrabber::Grab() {
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("An actor was hit by the Grabber::GetFirstPhysicsBodyInReach()"))
 
-		if (!PhysicsHandle) { 
-			//UE_LOG(LogTemp, Warning, TEXT("But there was no Physics Handle"))
-				return;
-		}
+	
 
 		//UE_LOG(LogTemp, Warning, TEXT("And the component has been grabbed"))
-
 		PhysicsHandle->GrabComponent(
 			ComponentToGrab,
 			NAME_None, // no bones needed
-			ComponentToGrab->GetOwner()->GetActorLocation(),
+			ComponentToGrab->GetComponentLocation(),
 			true // allow rotation
 		);
 	}
