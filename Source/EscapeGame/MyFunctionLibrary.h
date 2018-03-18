@@ -105,9 +105,11 @@ UCLASS(Blueprintable)
 class ESCAPEGAME_API UMyFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
-	
+
+public:
 	UFUNCTION(BlueprintCallable, Category = "Utility")
 		static AActor* SpawnActorCopy(AActor* ref, F_BP_ActorSpawnParameters spawnparams);
-	
-	
+
+	UFUNCTION(BlueprintCallable, Category = "Utility")
+		static bool GetLastRenderedTime(AActor* actor, float tolerance);
 };
