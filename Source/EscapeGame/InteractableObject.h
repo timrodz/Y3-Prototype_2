@@ -26,4 +26,12 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 		bool Interact(AActor* ActorInstigator);
 		virtual bool Interact_Implementation(AActor* ActorInstigator);
+
+	UFUNCTION(BlueprintCallable, Category = "Interaction")
+	FORCEINLINE UTexture2D* GetIcon() { return InteractIcon; }
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Default")
+		UTexture2D* InteractIcon;
+
 };
