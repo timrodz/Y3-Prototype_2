@@ -10,9 +10,6 @@ UInteractionComponent::UInteractionComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	//Collider = CreateDefaultSubobject<USphereComponent>(TEXT("InteractionTracker"));
-	//Collider->AttachTo();
-
 	// ...
 }
 
