@@ -23,6 +23,8 @@ void AFirstPersonCharacterController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	Delta = DeltaTime;
+
 }
 
 // Called to bind functionality to input
