@@ -35,3 +35,8 @@ bool AInteractableObject::Interact_Implementation(AActor * ActorInstigator)
 {
 	return false;
 }
+
+FVector AInteractableObject::GetInteractLocation_Implementation()
+{
+	return GetActorLocation();
+}
