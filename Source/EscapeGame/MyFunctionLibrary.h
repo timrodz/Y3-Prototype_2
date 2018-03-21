@@ -112,4 +112,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Utility")
 		static bool GetLastRenderedTime(AActor* actor, float tolerance);
+
+	UFUNCTION(BlueprintCallable, Category = "Utility")
+		static bool PrimitiveLastRenderedTime(UPrimitiveComponent* primitive, float tolerance);
 };
