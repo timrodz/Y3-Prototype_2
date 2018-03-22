@@ -2,7 +2,7 @@
 
 #include "MyFunctionLibrary.h"
 #include "Engine/World.h"
-
+#include "Classes/Components/PrimitiveComponent.h"
 
 
 AActor* UMyFunctionLibrary::SpawnActorCopy(AActor* ref, F_BP_ActorSpawnParameters spawnparams)
@@ -22,4 +22,10 @@ AActor* UMyFunctionLibrary::SpawnActorCopy(AActor* ref, F_BP_ActorSpawnParameter
 bool UMyFunctionLibrary::GetLastRenderedTime(AActor* actor, float tolerance)
 {
 	return actor->WasRecentlyRendered(tolerance);
+}
+
+bool UMyFunctionLibrary::PrimitiveLastRenderedTime(UPrimitiveComponent* primitive, float tolerance)
+{
+	float time = primitive->GetWorld()->GetTimeSeconds() - primitive->LastRenderTimeOnScreen;
+	return time <= tolerance && time >= 0;
 }
