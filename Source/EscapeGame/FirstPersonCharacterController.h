@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "FirstPersonCharacterController.generated.h"
 
-UCLASS()
+UCLASS(Blueprintable)
 class ESCAPEGAME_API AFirstPersonCharacterController : public ACharacter
 {
 	GENERATED_BODY()
@@ -26,6 +26,31 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables | New")
+		bool Sprinting;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables | New")
+		bool Pushing;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables | New")
+		FVector PushVector;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables | New")
+		FVector InspectableLocation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables | New")
+		FRotator InspectableRotation;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables")
+	//	AActor* InspectionObject;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Variables | New")
+		bool isInspecting;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Variables | New")
+		float TraceLength;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Variables | New")
+		float Delta;
 	
 };
