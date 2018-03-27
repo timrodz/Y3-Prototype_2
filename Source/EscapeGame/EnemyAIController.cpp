@@ -214,11 +214,15 @@ void AEnemyAIController::FindWaypoint()
 
 	// Find all waypoints in map
 	for (TActorIterator<AEnemyWaypoint> ActorItr(GetWorld()); ActorItr; ++ActorItr)
-	{
+	{				
 		AEnemyWaypoint *WP = *ActorItr;
-		// Push to waypoints vector
-		Waypoints.push_back(WP);
-	
+		// Push to waypoints vector - if not random event navigation point
+
+		if (!WP->RandomEventNavigationOnly)
+		{
+			Waypoints.push_back(WP);
+		}
+
 		//ClientMessage(ActorItr->GetName());
 		//ClientMessage(ActorItr->GetActorLocation().ToString());
 	}
