@@ -42,6 +42,9 @@ public:
 		void OnReleaseComponent(UPrimitiveComponent* Component);
 	virtual void OnReleaseComponent_Implementation(UPrimitiveComponent* Component);
 
+	UFUNCTION(BlueprintCallable)
+	void Release();
+
 public:
 
 private:
@@ -54,7 +57,7 @@ private:
 	void Grab();
 
 	// Called when grab is released
-	void Release();
+	
 
 
 
