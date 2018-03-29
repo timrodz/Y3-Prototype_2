@@ -37,7 +37,7 @@ void UGrabber::SetupInputComponent()
 	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 	if (InputComponent)
 	{
-		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+		InputComponent->BindAction("Interact", IE_Pressed, this, &UGrabber::Grab);
 		//InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
 	}
 	else
