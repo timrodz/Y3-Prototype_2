@@ -37,7 +37,7 @@ void UGrabber::SetupInputComponent()
 	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 	if (InputComponent)
 	{
-		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+		InputComponent->BindAction("Interact", IE_Pressed, this, &UGrabber::Grab);
 		//InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
 	}
 	else
@@ -87,6 +87,8 @@ void UGrabber::Grab() {
 			ComponentToGrab->GetComponentLocation(),
 			true // allow rotation
 		);
+
+		OnGrabComponent(PhysicsHandle->GrabbedComponent);
 	}
 }
 
@@ -101,6 +103,7 @@ void UGrabber::Release()
 
 	//UE_LOG(LogTemp, Warning, TEXT("and the component has been released"))
 
+	OnReleaseComponent(PhysicsHandle->GrabbedComponent);
 	PhysicsHandle->ReleaseComponent();
 }
 
@@ -119,6 +122,7 @@ void UGrabber::Throw(FVector direction)
 	}
 
 	comp->AddForce(direction * ThrowStrength, NAME_None, true);
+	OnReleaseComponent(PhysicsHandle->GrabbedComponent);
 	PhysicsHandle->ReleaseComponent();
 	
 	//comp->AddForce(direction * ThrowStrength);
@@ -159,4 +163,14 @@ FVector UGrabber::GetReachLineEnd()
 		OUT PlayerViewPointRotation
 	);
 	return PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
+}
+
+void UGrabber::OnReleaseComponent_Implementation(UPrimitiveComponent* Component)
+{
+
+}
+
+void UGrabber::OnGrabComponent_Implementation(UPrimitiveComponent* Component)
+{
+
 }

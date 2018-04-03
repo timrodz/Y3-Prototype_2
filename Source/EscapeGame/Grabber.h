@@ -7,8 +7,7 @@
 #include "Components/ActorComponent.h"
 #include "Grabber.generated.h"
 
-
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ESCAPEGAME_API UGrabber : public UActorComponent
 {
 	GENERATED_BODY()
@@ -35,6 +34,19 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Throw")
 	void Throw(FVector direction);
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Grab")
+		void OnGrabComponent(UPrimitiveComponent* Component);
+	virtual void OnGrabComponent_Implementation(UPrimitiveComponent* Component);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Grab")
+		void OnReleaseComponent(UPrimitiveComponent* Component);
+	virtual void OnReleaseComponent_Implementation(UPrimitiveComponent* Component);
+
+	UFUNCTION(BlueprintCallable)
+	void Release();
+
+public:
+
 private:
 
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
@@ -45,7 +57,7 @@ private:
 	void Grab();
 
 	// Called when grab is released
-	void Release();
+	
 
 
 
