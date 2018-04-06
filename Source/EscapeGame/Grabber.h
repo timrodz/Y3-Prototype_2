@@ -26,6 +26,9 @@ public:
 	// How far ahead of the player can we reach in cm
 	UPROPERTY(EditDefaultsOnly, Category = "Raycast")
 	float Reach = 300.f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Raycast")
+	float HoldDistance = 250.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Pickup")
 	float ThrowStrength = 100.0f;
@@ -75,5 +78,8 @@ private:
 
 	// Returns current end of reach line
 	FVector GetReachLineEnd();
+	
+	// Returns hold location
+	FVector GetHoldLocation();
 	
 };
