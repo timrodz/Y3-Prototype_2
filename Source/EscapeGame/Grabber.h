@@ -24,10 +24,10 @@ public:
 
 
 	// How far ahead of the player can we reach in cm
-	UPROPERTY(EditDefaultsOnly, Category = "Raycast")
+	UPROPERTY(EditDefaultsOnly, VisibleAnywhere, Category = "Raycast")
 	float Reach = 300.f;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Raycast")
+	UPROPERTY(EditDefaultsOnly, VisibleAnywhere, Category = "Raycast")
 	float HoldDistance = 250.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Pickup")
