@@ -245,7 +245,7 @@ void AEnemyCharacter::OnHearPlayer(APawn * PawnInstigator, const FVector & Locat
 {
 
 
-	UE_LOG(LogTemp, Warning, TEXT("Player Loc: %s		vs			Location: %s"), *PawnInstigator->GetActorLocation().ToString(), *Location.ToString())
+	//UE_LOG(LogTemp, Warning, TEXT("Player Loc: %s		vs			Location: %s"), *PawnInstigator->GetActorLocation().ToString(), *Location.ToString())
 	//if (!IsAlive())
 	//{
 	//	return;
