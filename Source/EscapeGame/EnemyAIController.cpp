@@ -267,7 +267,7 @@ void AEnemyAIController::SetHeardNoiseLocation(FVector location)
 		//UE_LOG(LogTemp, Error, TEXT("Setting target location"));
 		BlackboardComp->SetValueAsVector(TargetLocationKeyName, location);
 		CurrentMode = EEnemyAIMode::HEARD_NOISE;
-		UE_LOG(LogTemp, Warning, TEXT("AI CONTROLLER - OnHearNoise setting location"));
+		//UE_LOG(LogTemp, Warning, TEXT("AI CONTROLLER - OnHearNoise setting location"));
 	}
 }
 
