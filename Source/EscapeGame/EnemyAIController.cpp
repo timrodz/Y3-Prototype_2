@@ -189,6 +189,14 @@ bool AEnemyAIController::GetHasHeardNoise()
 	return CurrentMode == EEnemyAIMode::HEARD_NOISE;
 }
 
+bool AEnemyAIController::IsWandering()
+{
+	if (CurrentMode == EEnemyAIMode::WANDER)
+		return true;
+
+	return false;
+}
+
 void AEnemyAIController::SetInvestigateLastKnownLocation()
 {
 	CurrentMode = EEnemyAIMode::LAST_KNOWN_LOCATION;
@@ -269,5 +277,10 @@ void AEnemyAIController::SetHeardNoiseLocation(FVector location)
 		CurrentMode = EEnemyAIMode::HEARD_NOISE;
 		//UE_LOG(LogTemp, Warning, TEXT("AI CONTROLLER - OnHearNoise setting location"));
 	}
+}
+
+EEnemyAIMode AEnemyAIController::GetCurrentState()
+{
+	return CurrentMode;
 }
 
