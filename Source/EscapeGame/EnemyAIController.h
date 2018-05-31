@@ -100,8 +100,13 @@ public:
 		bool GetHasHeardNoise();
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
+		bool IsWandering();
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
 		void SetHeardNoiseLocation(FVector location);
 
+	UFUNCTION(BlueprintCallable, Category = "AI")
+		EEnemyAIMode GetCurrentState();
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 		bool GetShouldWander();
