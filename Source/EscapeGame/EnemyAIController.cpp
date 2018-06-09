@@ -189,6 +189,14 @@ bool AEnemyAIController::GetHasHeardNoise()
 	return CurrentMode == EEnemyAIMode::HEARD_NOISE;
 }
 
+bool AEnemyAIController::IsWandering()
+{
+	if (CurrentMode == EEnemyAIMode::WANDER)
+		return true;
+
+	return false;
+}
+
 void AEnemyAIController::SetInvestigateLastKnownLocation()
 {
 	CurrentMode = EEnemyAIMode::LAST_KNOWN_LOCATION;
@@ -214,11 +222,15 @@ void AEnemyAIController::FindWaypoint()
 
 	// Find all waypoints in map
 	for (TActorIterator<AEnemyWaypoint> ActorItr(GetWorld()); ActorItr; ++ActorItr)
-	{
+	{				
 		AEnemyWaypoint *WP = *ActorItr;
-		// Push to waypoints vector
-		Waypoints.push_back(WP);
-	
+		// Push to waypoints vector - if not random event navigation point
+
+		if (!WP->RandomEventNavigationOnly)
+		{
+			Waypoints.push_back(WP);
+		}
+
 		//ClientMessage(ActorItr->GetName());
 		//ClientMessage(ActorItr->GetActorLocation().ToString());
 	}
@@ -263,7 +275,12 @@ void AEnemyAIController::SetHeardNoiseLocation(FVector location)
 		//UE_LOG(LogTemp, Error, TEXT("Setting target location"));
 		BlackboardComp->SetValueAsVector(TargetLocationKeyName, location);
 		CurrentMode = EEnemyAIMode::HEARD_NOISE;
-		UE_LOG(LogTemp, Warning, TEXT("AI CONTROLLER - OnHearNoise setting location"));
+		//UE_LOG(LogTemp, Warning, TEXT("AI CONTROLLER - OnHearNoise setting location"));
 	}
+}
+
+EEnemyAIMode AEnemyAIController::GetCurrentState()
+{
+	return CurrentMode;
 }
 

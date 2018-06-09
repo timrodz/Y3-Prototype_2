@@ -80,7 +80,7 @@ void AEnemyCharacter::BeginPlay()
 	if (PawnSensingComp)
 	{
 		// Set these pawnsensing functions to call our functions
-		PawnSensingComp->OnSeePawn.AddDynamic(this, &AEnemyCharacter::OnSeePlayer);
+		//PawnSensingComp->OnSeePawn.AddDynamic(this, &AEnemyCharacter::OnSeePlayer);
 		PawnSensingComp->OnHearNoise.AddDynamic(this, &AEnemyCharacter::OnHearPlayer);	
 	}
 
@@ -245,7 +245,7 @@ void AEnemyCharacter::OnHearPlayer(APawn * PawnInstigator, const FVector & Locat
 {
 
 
-	UE_LOG(LogTemp, Warning, TEXT("Player Loc: %s		vs			Location: %s"), *PawnInstigator->GetActorLocation().ToString(), *Location.ToString())
+	//UE_LOG(LogTemp, Warning, TEXT("Player Loc: %s		vs			Location: %s"), *PawnInstigator->GetActorLocation().ToString(), *Location.ToString())
 	//if (!IsAlive())
 	//{
 	//	return;

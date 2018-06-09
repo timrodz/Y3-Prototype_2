@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "InteractableObject.h"
+#include "Engine/Texture2D.h"
 
 
 // Sets default values
@@ -33,4 +34,9 @@ void AInteractableObject::Tick(float DeltaTime)
 bool AInteractableObject::Interact_Implementation(AActor * ActorInstigator)
 {
 	return false;
+}
+
+FVector AInteractableObject::GetInteractLocation_Implementation()
+{
+	return GetActorLocation();
 }

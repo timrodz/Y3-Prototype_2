@@ -7,8 +7,7 @@
 #include "Components/ActorComponent.h"
 #include "Grabber.generated.h"
 
-
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ESCAPEGAME_API UGrabber : public UActorComponent
 {
 	GENERATED_BODY()
@@ -27,6 +26,9 @@ public:
 	// How far ahead of the player can we reach in cm
 	UPROPERTY(EditDefaultsOnly, Category = "Raycast")
 	float Reach = 300.f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Raycast")
+	float HoldDistance = 250.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Pickup")
 	float ThrowStrength = 100.0f;
@@ -34,6 +36,19 @@ public:
 	// Called when Left-click (Throw button) is pressed
 	UFUNCTION(BlueprintCallable, Category = "Throw")
 	void Throw(FVector direction);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Grab")
+		void OnGrabComponent(UPrimitiveComponent* Component);
+	virtual void OnGrabComponent_Implementation(UPrimitiveComponent* Component);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Grab")
+		void OnReleaseComponent(UPrimitiveComponent* Component);
+	virtual void OnReleaseComponent_Implementation(UPrimitiveComponent* Component);
+
+	UFUNCTION(BlueprintCallable)
+	void Release();
+
+public:
 
 private:
 
@@ -45,7 +60,7 @@ private:
 	void Grab();
 
 	// Called when grab is released
-	void Release();
+	
 
 
 
@@ -63,5 +78,8 @@ private:
 
 	// Returns current end of reach line
 	FVector GetReachLineEnd();
+	
+	// Returns hold location
+	FVector GetHoldLocation();
 	
 };

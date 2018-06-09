@@ -10,4 +10,9 @@ UCLASS()
 class ESCAPEGAME_API AEnemyWaypoint : public ATargetPoint
 {
 	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere)
+		bool RandomEventNavigationOnly;
 };
