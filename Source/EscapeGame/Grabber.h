@@ -32,6 +32,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Pickup")
 	float ThrowStrength = 100.0f;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "Pickup")
+	FVector HoldOffset;
 
 	// Called when Left-click (Throw button) is pressed
 	UFUNCTION(BlueprintCallable, Category = "Throw")
