@@ -173,7 +173,7 @@ FVector UGrabber::GetHoldLocation()
 		OUT PlayerViewPointLocation,
 		OUT PlayerViewPointRotation
 	);
-	return PlayerViewPointLocation + PlayerViewPointRotation.Vector() * HoldDistance;
+	return (PlayerViewPointLocation + PlayerViewPointRotation.Vector() * HoldDistance) + HoldOffset;
 }
 
 void UGrabber::OnReleaseComponent_Implementation(UPrimitiveComponent* Component)
